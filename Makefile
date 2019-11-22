@@ -12,3 +12,6 @@ test:
 format:
 	@find . -type f -name '*.go' -not -path './vendor/*' -exec gofmt -w "{}" +
 	@find . -type f -name '*.go' -not -path './vendor/*' -exec goimports -w "{}" +
+
+deps:
+	go get -u github.com/openshift/imagebuilder/cmd/imagebuilder
