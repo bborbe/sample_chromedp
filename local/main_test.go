@@ -11,7 +11,7 @@ import (
 var _ = Describe("Chromedp", func() {
 	It("Compiles", func() {
 		var err error
-		_, err = gexec.Build("github.com/bborbe/sample-chromedp")
+		_, err = gexec.Build("github.com/bborbe/sample-chromedp/local")
 		Expect(err).NotTo(HaveOccurred())
 	})
 })

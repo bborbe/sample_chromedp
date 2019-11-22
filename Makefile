@@ -1,5 +1,6 @@
 
-default: ensure test run
+precommit: ensure format test
+	@echo "ready to commit"
 
 ensure:
 	GO111MODULE=on go mod verify
@@ -8,5 +9,6 @@ ensure:
 test:
 	go test -p=1 -cover -race $(shell go list ./... | grep -v /vendor/)
 
-run:
-	go run main.go
+format:
+	@find . -type f -name '*.go' -not -path './vendor/*' -exec gofmt -w "{}" +
+	@find . -type f -name '*.go' -not -path './vendor/*' -exec goimports -w "{}" +
