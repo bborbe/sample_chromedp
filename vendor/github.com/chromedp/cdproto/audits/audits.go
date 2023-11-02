@@ -32,8 +32,9 @@ type GetEncodedResponseParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Audits#method-getEncodedResponse
 //
 // parameters:
-//   requestID - Identifier of the network request to get content for.
-//   encoding - The encoding to use.
+//
+//	requestID - Identifier of the network request to get content for.
+//	encoding - The encoding to use.
 func GetEncodedResponse(requestID network.RequestID, encoding GetEncodedResponseEncoding) *GetEncodedResponseParams {
 	return &GetEncodedResponseParams{
 		RequestID: requestID,
@@ -64,9 +65,10 @@ type GetEncodedResponseReturns struct {
 // Do executes Audits.getEncodedResponse against the provided context.
 //
 // returns:
-//   body - The encoded body as a base64 string. Omitted if sizeOnly is true.
-//   originalSize - Size before re-encoding.
-//   encodedSize - Size after re-encoding.
+//
+//	body - The encoded body as a base64 string. Omitted if sizeOnly is true.
+//	originalSize - Size before re-encoding.
+//	encodedSize - Size after re-encoding.
 func (p *GetEncodedResponseParams) Do(ctx context.Context) (body []byte, originalSize int64, encodedSize int64, err error) {
 	// execute
 	var res GetEncodedResponseReturns
@@ -84,7 +86,105 @@ func (p *GetEncodedResponseParams) Do(ctx context.Context) (body []byte, origina
 	return dec, res.OriginalSize, res.EncodedSize, nil
 }
 
+// DisableParams disables issues domain, prevents further issues from being
+// reported to the client.
+type DisableParams struct{}
+
+// Disable disables issues domain, prevents further issues from being
+// reported to the client.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Audits#method-disable
+func Disable() *DisableParams {
+	return &DisableParams{}
+}
+
+// Do executes Audits.disable against the provided context.
+func (p *DisableParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandDisable, nil, nil)
+}
+
+// EnableParams enables issues domain, sends the issues collected so far to
+// the client by means of the issueAdded event.
+type EnableParams struct{}
+
+// Enable enables issues domain, sends the issues collected so far to the
+// client by means of the issueAdded event.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Audits#method-enable
+func Enable() *EnableParams {
+	return &EnableParams{}
+}
+
+// Do executes Audits.enable against the provided context.
+func (p *EnableParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandEnable, nil, nil)
+}
+
+// CheckContrastParams runs the contrast check for the target page. Found
+// issues are reported using Audits.issueAdded event.
+type CheckContrastParams struct {
+	ReportAAA bool `json:"reportAAA,omitempty"` // Whether to report WCAG AAA level issues. Default is false.
+}
+
+// CheckContrast runs the contrast check for the target page. Found issues
+// are reported using Audits.issueAdded event.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Audits#method-checkContrast
+//
+// parameters:
+func CheckContrast() *CheckContrastParams {
+	return &CheckContrastParams{}
+}
+
+// WithReportAAA whether to report WCAG AAA level issues. Default is false.
+func (p CheckContrastParams) WithReportAAA(reportAAA bool) *CheckContrastParams {
+	p.ReportAAA = reportAAA
+	return &p
+}
+
+// Do executes Audits.checkContrast against the provided context.
+func (p *CheckContrastParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandCheckContrast, p, nil)
+}
+
+// CheckFormsIssuesParams runs the form issues check for the target page.
+// Found issues are reported using Audits.issueAdded event.
+type CheckFormsIssuesParams struct{}
+
+// CheckFormsIssues runs the form issues check for the target page. Found
+// issues are reported using Audits.issueAdded event.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Audits#method-checkFormsIssues
+func CheckFormsIssues() *CheckFormsIssuesParams {
+	return &CheckFormsIssuesParams{}
+}
+
+// CheckFormsIssuesReturns return values.
+type CheckFormsIssuesReturns struct {
+	FormIssues []*GenericIssueDetails `json:"formIssues,omitempty"`
+}
+
+// Do executes Audits.checkFormsIssues against the provided context.
+//
+// returns:
+//
+//	formIssues
+func (p *CheckFormsIssuesParams) Do(ctx context.Context) (formIssues []*GenericIssueDetails, err error) {
+	// execute
+	var res CheckFormsIssuesReturns
+	err = cdp.Execute(ctx, CommandCheckFormsIssues, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.FormIssues, nil
+}
+
 // Command names.
 const (
 	CommandGetEncodedResponse = "Audits.getEncodedResponse"
+	CommandDisable            = "Audits.disable"
+	CommandEnable             = "Audits.enable"
+	CommandCheckContrast      = "Audits.checkContrast"
+	CommandCheckFormsIssues   = "Audits.checkFormsIssues"
 )

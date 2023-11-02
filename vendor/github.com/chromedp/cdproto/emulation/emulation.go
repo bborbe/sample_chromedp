@@ -33,7 +33,8 @@ type CanEmulateReturns struct {
 // Do executes Emulation.canEmulate against the provided context.
 //
 // returns:
-//   result - True if emulation is supported.
+//
+//	result - True if emulation is supported.
 func (p *CanEmulateParams) Do(ctx context.Context) (result bool, err error) {
 	// execute
 	var res CanEmulateReturns
@@ -106,7 +107,8 @@ type SetFocusEmulationEnabledParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setFocusEmulationEnabled
 //
 // parameters:
-//   enabled - Whether to enable to disable focus emulation.
+//
+//	enabled - Whether to enable to disable focus emulation.
 func SetFocusEmulationEnabled(enabled bool) *SetFocusEmulationEnabledParams {
 	return &SetFocusEmulationEnabledParams{
 		Enabled: enabled,
@@ -116,6 +118,34 @@ func SetFocusEmulationEnabled(enabled bool) *SetFocusEmulationEnabledParams {
 // Do executes Emulation.setFocusEmulationEnabled against the provided context.
 func (p *SetFocusEmulationEnabledParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandSetFocusEmulationEnabled, p, nil)
+}
+
+// SetAutoDarkModeOverrideParams automatically render all web contents using
+// a dark theme.
+type SetAutoDarkModeOverrideParams struct {
+	Enabled bool `json:"enabled,omitempty"` // Whether to enable or disable automatic dark mode. If not specified, any existing override will be cleared.
+}
+
+// SetAutoDarkModeOverride automatically render all web contents using a dark
+// theme.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setAutoDarkModeOverride
+//
+// parameters:
+func SetAutoDarkModeOverride() *SetAutoDarkModeOverrideParams {
+	return &SetAutoDarkModeOverrideParams{}
+}
+
+// WithEnabled whether to enable or disable automatic dark mode. If not
+// specified, any existing override will be cleared.
+func (p SetAutoDarkModeOverrideParams) WithEnabled(enabled bool) *SetAutoDarkModeOverrideParams {
+	p.Enabled = enabled
+	return &p
+}
+
+// Do executes Emulation.setAutoDarkModeOverride against the provided context.
+func (p *SetAutoDarkModeOverrideParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetAutoDarkModeOverride, p, nil)
 }
 
 // SetCPUThrottlingRateParams enables CPU throttling to emulate slow CPUs.
@@ -128,7 +158,8 @@ type SetCPUThrottlingRateParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setCPUThrottlingRate
 //
 // parameters:
-//   rate - Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+//
+//	rate - Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
 func SetCPUThrottlingRate(rate float64) *SetCPUThrottlingRateParams {
 	return &SetCPUThrottlingRateParams{
 		Rate: rate,
@@ -187,6 +218,7 @@ type SetDeviceMetricsOverrideParams struct {
 	DontSetVisibleSize bool               `json:"dontSetVisibleSize,omitempty"` // Do not set visible view size, rely upon explicit setVisibleSize call.
 	ScreenOrientation  *ScreenOrientation `json:"screenOrientation,omitempty"`  // Screen orientation override.
 	Viewport           *page.Viewport     `json:"viewport,omitempty"`           // If set, the visible area of the page will be overridden to this viewport. This viewport change is not observed by the page, e.g. viewport-relative elements do not change positions.
+	DisplayFeature     *DisplayFeature    `json:"displayFeature,omitempty"`     // If set, the display feature of a multi-segment screen. If not set, multi-segment support is turned-off.
 }
 
 // SetDeviceMetricsOverride overrides the values of device screen dimensions
@@ -197,10 +229,11 @@ type SetDeviceMetricsOverrideParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDeviceMetricsOverride
 //
 // parameters:
-//   width - Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-//   height - Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
-//   deviceScaleFactor - Overriding device scale factor value. 0 disables the override.
-//   mobile - Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more.
+//
+//	width - Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
+//	height - Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the override.
+//	deviceScaleFactor - Overriding device scale factor value. 0 disables the override.
+//	mobile - Whether to emulate mobile device. This includes viewport meta tag, overlay scrollbars, text autosizing and more.
 func SetDeviceMetricsOverride(width int64, height int64, deviceScaleFactor float64, mobile bool) *SetDeviceMetricsOverrideParams {
 	return &SetDeviceMetricsOverrideParams{
 		Width:             width,
@@ -265,6 +298,13 @@ func (p SetDeviceMetricsOverrideParams) WithViewport(viewport *page.Viewport) *S
 	return &p
 }
 
+// WithDisplayFeature if set, the display feature of a multi-segment screen.
+// If not set, multi-segment support is turned-off.
+func (p SetDeviceMetricsOverrideParams) WithDisplayFeature(displayFeature *DisplayFeature) *SetDeviceMetricsOverrideParams {
+	p.DisplayFeature = displayFeature
+	return &p
+}
+
 // Do executes Emulation.setDeviceMetricsOverride against the provided context.
 func (p *SetDeviceMetricsOverrideParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandSetDeviceMetricsOverride, p, nil)
@@ -280,7 +320,8 @@ type SetScrollbarsHiddenParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setScrollbarsHidden
 //
 // parameters:
-//   hidden - Whether scrollbars should be always hidden.
+//
+//	hidden - Whether scrollbars should be always hidden.
 func SetScrollbarsHidden(hidden bool) *SetScrollbarsHiddenParams {
 	return &SetScrollbarsHiddenParams{
 		Hidden: hidden,
@@ -302,7 +343,8 @@ type SetDocumentCookieDisabledParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDocumentCookieDisabled
 //
 // parameters:
-//   disabled - Whether document.coookie API should be disabled.
+//
+//	disabled - Whether document.coookie API should be disabled.
 func SetDocumentCookieDisabled(disabled bool) *SetDocumentCookieDisabledParams {
 	return &SetDocumentCookieDisabledParams{
 		Disabled: disabled,
@@ -325,7 +367,8 @@ type SetEmitTouchEventsForMouseParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setEmitTouchEventsForMouse
 //
 // parameters:
-//   enabled - Whether touch emulation based on mouse input should be enabled.
+//
+//	enabled - Whether touch emulation based on mouse input should be enabled.
 func SetEmitTouchEventsForMouse(enabled bool) *SetEmitTouchEventsForMouseParams {
 	return &SetEmitTouchEventsForMouseParams{
 		Enabled: enabled,
@@ -378,6 +421,29 @@ func (p *SetEmulatedMediaParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandSetEmulatedMedia, p, nil)
 }
 
+// SetEmulatedVisionDeficiencyParams emulates the given vision deficiency.
+type SetEmulatedVisionDeficiencyParams struct {
+	Type SetEmulatedVisionDeficiencyType `json:"type"` // Vision deficiency to emulate. Order: best-effort emulations come first, followed by any physiologically accurate emulations for medically recognized color vision deficiencies.
+}
+
+// SetEmulatedVisionDeficiency emulates the given vision deficiency.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setEmulatedVisionDeficiency
+//
+// parameters:
+//
+//	type - Vision deficiency to emulate. Order: best-effort emulations come first, followed by any physiologically accurate emulations for medically recognized color vision deficiencies.
+func SetEmulatedVisionDeficiency(typeVal SetEmulatedVisionDeficiencyType) *SetEmulatedVisionDeficiencyParams {
+	return &SetEmulatedVisionDeficiencyParams{
+		Type: typeVal,
+	}
+}
+
+// Do executes Emulation.setEmulatedVisionDeficiency against the provided context.
+func (p *SetEmulatedVisionDeficiencyParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetEmulatedVisionDeficiency, p, nil)
+}
+
 // SetGeolocationOverrideParams overrides the Geolocation Position or Error.
 // Omitting any of the parameters emulates position unavailable.
 type SetGeolocationOverrideParams struct {
@@ -419,6 +485,155 @@ func (p *SetGeolocationOverrideParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandSetGeolocationOverride, p, nil)
 }
 
+// GetOverriddenSensorInformationParams [no description].
+type GetOverriddenSensorInformationParams struct {
+	Type SensorType `json:"type"`
+}
+
+// GetOverriddenSensorInformation [no description].
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-getOverriddenSensorInformation
+//
+// parameters:
+//
+//	type
+func GetOverriddenSensorInformation(typeVal SensorType) *GetOverriddenSensorInformationParams {
+	return &GetOverriddenSensorInformationParams{
+		Type: typeVal,
+	}
+}
+
+// GetOverriddenSensorInformationReturns return values.
+type GetOverriddenSensorInformationReturns struct {
+	RequestedSamplingFrequency float64 `json:"requestedSamplingFrequency,omitempty"`
+}
+
+// Do executes Emulation.getOverriddenSensorInformation against the provided context.
+//
+// returns:
+//
+//	requestedSamplingFrequency
+func (p *GetOverriddenSensorInformationParams) Do(ctx context.Context) (requestedSamplingFrequency float64, err error) {
+	// execute
+	var res GetOverriddenSensorInformationReturns
+	err = cdp.Execute(ctx, CommandGetOverriddenSensorInformation, p, &res)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.RequestedSamplingFrequency, nil
+}
+
+// SetSensorOverrideEnabledParams overrides a platform sensor of a given
+// type. If |enabled| is true, calls to Sensor.start() will use a virtual sensor
+// as backend rather than fetching data from a real hardware sensor. Otherwise,
+// existing virtual sensor-backend Sensor objects will fire an error event and
+// new calls to Sensor.start() will attempt to use a real sensor instead.
+type SetSensorOverrideEnabledParams struct {
+	Enabled  bool            `json:"enabled"`
+	Type     SensorType      `json:"type"`
+	Metadata *SensorMetadata `json:"metadata,omitempty"`
+}
+
+// SetSensorOverrideEnabled overrides a platform sensor of a given type. If
+// |enabled| is true, calls to Sensor.start() will use a virtual sensor as
+// backend rather than fetching data from a real hardware sensor. Otherwise,
+// existing virtual sensor-backend Sensor objects will fire an error event and
+// new calls to Sensor.start() will attempt to use a real sensor instead.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setSensorOverrideEnabled
+//
+// parameters:
+//
+//	enabled
+//	type
+func SetSensorOverrideEnabled(enabled bool, typeVal SensorType) *SetSensorOverrideEnabledParams {
+	return &SetSensorOverrideEnabledParams{
+		Enabled: enabled,
+		Type:    typeVal,
+	}
+}
+
+// WithMetadata [no description].
+func (p SetSensorOverrideEnabledParams) WithMetadata(metadata *SensorMetadata) *SetSensorOverrideEnabledParams {
+	p.Metadata = metadata
+	return &p
+}
+
+// Do executes Emulation.setSensorOverrideEnabled against the provided context.
+func (p *SetSensorOverrideEnabledParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetSensorOverrideEnabled, p, nil)
+}
+
+// SetSensorOverrideReadingsParams updates the sensor readings reported by a
+// sensor type previously overridden by setSensorOverrideEnabled.
+type SetSensorOverrideReadingsParams struct {
+	Type    SensorType     `json:"type"`
+	Reading *SensorReading `json:"reading"`
+}
+
+// SetSensorOverrideReadings updates the sensor readings reported by a sensor
+// type previously overridden by setSensorOverrideEnabled.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setSensorOverrideReadings
+//
+// parameters:
+//
+//	type
+//	reading
+func SetSensorOverrideReadings(typeVal SensorType, reading *SensorReading) *SetSensorOverrideReadingsParams {
+	return &SetSensorOverrideReadingsParams{
+		Type:    typeVal,
+		Reading: reading,
+	}
+}
+
+// Do executes Emulation.setSensorOverrideReadings against the provided context.
+func (p *SetSensorOverrideReadingsParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetSensorOverrideReadings, p, nil)
+}
+
+// SetIdleOverrideParams overrides the Idle state.
+type SetIdleOverrideParams struct {
+	IsUserActive     bool `json:"isUserActive"`     // Mock isUserActive
+	IsScreenUnlocked bool `json:"isScreenUnlocked"` // Mock isScreenUnlocked
+}
+
+// SetIdleOverride overrides the Idle state.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setIdleOverride
+//
+// parameters:
+//
+//	isUserActive - Mock isUserActive
+//	isScreenUnlocked - Mock isScreenUnlocked
+func SetIdleOverride(isUserActive bool, isScreenUnlocked bool) *SetIdleOverrideParams {
+	return &SetIdleOverrideParams{
+		IsUserActive:     isUserActive,
+		IsScreenUnlocked: isScreenUnlocked,
+	}
+}
+
+// Do executes Emulation.setIdleOverride against the provided context.
+func (p *SetIdleOverrideParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetIdleOverride, p, nil)
+}
+
+// ClearIdleOverrideParams clears Idle state overrides.
+type ClearIdleOverrideParams struct{}
+
+// ClearIdleOverride clears Idle state overrides.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-clearIdleOverride
+func ClearIdleOverride() *ClearIdleOverrideParams {
+	return &ClearIdleOverrideParams{}
+}
+
+// Do executes Emulation.clearIdleOverride against the provided context.
+func (p *ClearIdleOverrideParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandClearIdleOverride, nil, nil)
+}
+
 // SetPageScaleFactorParams sets a specified page scale factor.
 type SetPageScaleFactorParams struct {
 	PageScaleFactor float64 `json:"pageScaleFactor"` // Page scale factor.
@@ -429,7 +644,8 @@ type SetPageScaleFactorParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setPageScaleFactor
 //
 // parameters:
-//   pageScaleFactor - Page scale factor.
+//
+//	pageScaleFactor - Page scale factor.
 func SetPageScaleFactor(pageScaleFactor float64) *SetPageScaleFactorParams {
 	return &SetPageScaleFactorParams{
 		PageScaleFactor: pageScaleFactor,
@@ -451,7 +667,8 @@ type SetScriptExecutionDisabledParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setScriptExecutionDisabled
 //
 // parameters:
-//   value - Whether script execution should be disabled in the page.
+//
+//	value - Whether script execution should be disabled in the page.
 func SetScriptExecutionDisabled(value bool) *SetScriptExecutionDisabledParams {
 	return &SetScriptExecutionDisabledParams{
 		Value: value,
@@ -476,7 +693,8 @@ type SetTouchEmulationEnabledParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setTouchEmulationEnabled
 //
 // parameters:
-//   enabled - Whether the touch event emulation should be enabled.
+//
+//	enabled - Whether the touch event emulation should be enabled.
 func SetTouchEmulationEnabled(enabled bool) *SetTouchEmulationEnabledParams {
 	return &SetTouchEmulationEnabledParams{
 		Enabled: enabled,
@@ -501,7 +719,6 @@ type SetVirtualTimePolicyParams struct {
 	Policy                            VirtualTimePolicy   `json:"policy"`
 	Budget                            float64             `json:"budget,omitempty"`                            // If set, after this many virtual milliseconds have elapsed virtual time will be paused and a virtualTimeBudgetExpired event is sent.
 	MaxVirtualTimeTaskStarvationCount int64               `json:"maxVirtualTimeTaskStarvationCount,omitempty"` // If set this specifies the maximum number of tasks that can be run before virtual is forced forwards to prevent deadlock.
-	WaitForNavigation                 bool                `json:"waitForNavigation,omitempty"`                 // If set the virtual time policy change should be deferred until any frame starts navigating. Note any previous deferred policy change is superseded.
 	InitialVirtualTime                *cdp.TimeSinceEpoch `json:"initialVirtualTime,omitempty"`                // If set, base::Time::Now will be overridden to initially return this value.
 }
 
@@ -512,7 +729,8 @@ type SetVirtualTimePolicyParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setVirtualTimePolicy
 //
 // parameters:
-//   policy
+//
+//	policy
 func SetVirtualTimePolicy(policy VirtualTimePolicy) *SetVirtualTimePolicyParams {
 	return &SetVirtualTimePolicyParams{
 		Policy: policy,
@@ -534,14 +752,6 @@ func (p SetVirtualTimePolicyParams) WithMaxVirtualTimeTaskStarvationCount(maxVir
 	return &p
 }
 
-// WithWaitForNavigation if set the virtual time policy change should be
-// deferred until any frame starts navigating. Note any previous deferred policy
-// change is superseded.
-func (p SetVirtualTimePolicyParams) WithWaitForNavigation(waitForNavigation bool) *SetVirtualTimePolicyParams {
-	p.WaitForNavigation = waitForNavigation
-	return &p
-}
-
 // WithInitialVirtualTime if set, base::Time::Now will be overridden to
 // initially return this value.
 func (p SetVirtualTimePolicyParams) WithInitialVirtualTime(initialVirtualTime *cdp.TimeSinceEpoch) *SetVirtualTimePolicyParams {
@@ -557,7 +767,8 @@ type SetVirtualTimePolicyReturns struct {
 // Do executes Emulation.setVirtualTimePolicy against the provided context.
 //
 // returns:
-//   virtualTimeTicksBase - Absolute timestamp at which virtual time was first enabled (up time in milliseconds).
+//
+//	virtualTimeTicksBase - Absolute timestamp at which virtual time was first enabled (up time in milliseconds).
 func (p *SetVirtualTimePolicyParams) Do(ctx context.Context) (virtualTimeTicksBase float64, err error) {
 	// execute
 	var res SetVirtualTimePolicyReturns
@@ -567,6 +778,34 @@ func (p *SetVirtualTimePolicyParams) Do(ctx context.Context) (virtualTimeTicksBa
 	}
 
 	return res.VirtualTimeTicksBase, nil
+}
+
+// SetLocaleOverrideParams overrides default host system locale with the
+// specified one.
+type SetLocaleOverrideParams struct {
+	Locale string `json:"locale,omitempty"` // ICU style C locale (e.g. "en_US"). If not specified or empty, disables the override and restores default host system locale.
+}
+
+// SetLocaleOverride overrides default host system locale with the specified
+// one.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setLocaleOverride
+//
+// parameters:
+func SetLocaleOverride() *SetLocaleOverrideParams {
+	return &SetLocaleOverrideParams{}
+}
+
+// WithLocale iCU style C locale (e.g. "en_US"). If not specified or empty,
+// disables the override and restores default host system locale.
+func (p SetLocaleOverrideParams) WithLocale(locale string) *SetLocaleOverrideParams {
+	p.Locale = locale
+	return &p
+}
+
+// Do executes Emulation.setLocaleOverride against the provided context.
+func (p *SetLocaleOverrideParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetLocaleOverride, p, nil)
 }
 
 // SetTimezoneOverrideParams overrides default host system timezone with the
@@ -581,7 +820,8 @@ type SetTimezoneOverrideParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setTimezoneOverride
 //
 // parameters:
-//   timezoneID - The timezone identifier. If empty, disables the override and restores default host system timezone.
+//
+//	timezoneID - The timezone identifier. If empty, disables the override and restores default host system timezone.
 func SetTimezoneOverride(timezoneID string) *SetTimezoneOverrideParams {
 	return &SetTimezoneOverrideParams{
 		TimezoneID: timezoneID,
@@ -593,12 +833,59 @@ func (p *SetTimezoneOverrideParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandSetTimezoneOverride, p, nil)
 }
 
+// SetDisabledImageTypesParams [no description].
+type SetDisabledImageTypesParams struct {
+	ImageTypes []DisabledImageType `json:"imageTypes"` // Image types to disable.
+}
+
+// SetDisabledImageTypes [no description].
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setDisabledImageTypes
+//
+// parameters:
+//
+//	imageTypes - Image types to disable.
+func SetDisabledImageTypes(imageTypes []DisabledImageType) *SetDisabledImageTypesParams {
+	return &SetDisabledImageTypesParams{
+		ImageTypes: imageTypes,
+	}
+}
+
+// Do executes Emulation.setDisabledImageTypes against the provided context.
+func (p *SetDisabledImageTypesParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetDisabledImageTypes, p, nil)
+}
+
+// SetHardwareConcurrencyOverrideParams [no description].
+type SetHardwareConcurrencyOverrideParams struct {
+	HardwareConcurrency int64 `json:"hardwareConcurrency"` // Hardware concurrency to report
+}
+
+// SetHardwareConcurrencyOverride [no description].
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setHardwareConcurrencyOverride
+//
+// parameters:
+//
+//	hardwareConcurrency - Hardware concurrency to report
+func SetHardwareConcurrencyOverride(hardwareConcurrency int64) *SetHardwareConcurrencyOverrideParams {
+	return &SetHardwareConcurrencyOverrideParams{
+		HardwareConcurrency: hardwareConcurrency,
+	}
+}
+
+// Do executes Emulation.setHardwareConcurrencyOverride against the provided context.
+func (p *SetHardwareConcurrencyOverrideParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetHardwareConcurrencyOverride, p, nil)
+}
+
 // SetUserAgentOverrideParams allows overriding user agent with the given
 // string.
 type SetUserAgentOverrideParams struct {
-	UserAgent      string `json:"userAgent"`                // User agent to use.
-	AcceptLanguage string `json:"acceptLanguage,omitempty"` // Browser langugage to emulate.
-	Platform       string `json:"platform,omitempty"`       // The platform navigator.platform should return.
+	UserAgent         string             `json:"userAgent"`                   // User agent to use.
+	AcceptLanguage    string             `json:"acceptLanguage,omitempty"`    // Browser langugage to emulate.
+	Platform          string             `json:"platform,omitempty"`          // The platform navigator.platform should return.
+	UserAgentMetadata *UserAgentMetadata `json:"userAgentMetadata,omitempty"` // To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
 }
 
 // SetUserAgentOverride allows overriding user agent with the given string.
@@ -606,7 +893,8 @@ type SetUserAgentOverrideParams struct {
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setUserAgentOverride
 //
 // parameters:
-//   userAgent - User agent to use.
+//
+//	userAgent - User agent to use.
 func SetUserAgentOverride(userAgent string) *SetUserAgentOverrideParams {
 	return &SetUserAgentOverrideParams{
 		UserAgent: userAgent,
@@ -625,9 +913,39 @@ func (p SetUserAgentOverrideParams) WithPlatform(platform string) *SetUserAgentO
 	return &p
 }
 
+// WithUserAgentMetadata to be sent in Sec-CH-UA-* headers and returned in
+// navigator.userAgentData.
+func (p SetUserAgentOverrideParams) WithUserAgentMetadata(userAgentMetadata *UserAgentMetadata) *SetUserAgentOverrideParams {
+	p.UserAgentMetadata = userAgentMetadata
+	return &p
+}
+
 // Do executes Emulation.setUserAgentOverride against the provided context.
 func (p *SetUserAgentOverrideParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandSetUserAgentOverride, p, nil)
+}
+
+// SetAutomationOverrideParams allows overriding the automation flag.
+type SetAutomationOverrideParams struct {
+	Enabled bool `json:"enabled"` // Whether the override should be enabled.
+}
+
+// SetAutomationOverride allows overriding the automation flag.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Emulation#method-setAutomationOverride
+//
+// parameters:
+//
+//	enabled - Whether the override should be enabled.
+func SetAutomationOverride(enabled bool) *SetAutomationOverrideParams {
+	return &SetAutomationOverrideParams{
+		Enabled: enabled,
+	}
+}
+
+// Do executes Emulation.setAutomationOverride against the provided context.
+func (p *SetAutomationOverrideParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandSetAutomationOverride, p, nil)
 }
 
 // Command names.
@@ -637,6 +955,7 @@ const (
 	CommandClearGeolocationOverride          = "Emulation.clearGeolocationOverride"
 	CommandResetPageScaleFactor              = "Emulation.resetPageScaleFactor"
 	CommandSetFocusEmulationEnabled          = "Emulation.setFocusEmulationEnabled"
+	CommandSetAutoDarkModeOverride           = "Emulation.setAutoDarkModeOverride"
 	CommandSetCPUThrottlingRate              = "Emulation.setCPUThrottlingRate"
 	CommandSetDefaultBackgroundColorOverride = "Emulation.setDefaultBackgroundColorOverride"
 	CommandSetDeviceMetricsOverride          = "Emulation.setDeviceMetricsOverride"
@@ -644,11 +963,21 @@ const (
 	CommandSetDocumentCookieDisabled         = "Emulation.setDocumentCookieDisabled"
 	CommandSetEmitTouchEventsForMouse        = "Emulation.setEmitTouchEventsForMouse"
 	CommandSetEmulatedMedia                  = "Emulation.setEmulatedMedia"
+	CommandSetEmulatedVisionDeficiency       = "Emulation.setEmulatedVisionDeficiency"
 	CommandSetGeolocationOverride            = "Emulation.setGeolocationOverride"
+	CommandGetOverriddenSensorInformation    = "Emulation.getOverriddenSensorInformation"
+	CommandSetSensorOverrideEnabled          = "Emulation.setSensorOverrideEnabled"
+	CommandSetSensorOverrideReadings         = "Emulation.setSensorOverrideReadings"
+	CommandSetIdleOverride                   = "Emulation.setIdleOverride"
+	CommandClearIdleOverride                 = "Emulation.clearIdleOverride"
 	CommandSetPageScaleFactor                = "Emulation.setPageScaleFactor"
 	CommandSetScriptExecutionDisabled        = "Emulation.setScriptExecutionDisabled"
 	CommandSetTouchEmulationEnabled          = "Emulation.setTouchEmulationEnabled"
 	CommandSetVirtualTimePolicy              = "Emulation.setVirtualTimePolicy"
+	CommandSetLocaleOverride                 = "Emulation.setLocaleOverride"
 	CommandSetTimezoneOverride               = "Emulation.setTimezoneOverride"
+	CommandSetDisabledImageTypes             = "Emulation.setDisabledImageTypes"
+	CommandSetHardwareConcurrencyOverride    = "Emulation.setHardwareConcurrencyOverride"
 	CommandSetUserAgentOverride              = "Emulation.setUserAgentOverride"
+	CommandSetAutomationOverride             = "Emulation.setAutomationOverride"
 )

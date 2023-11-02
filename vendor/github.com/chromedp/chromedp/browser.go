@@ -10,8 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	easyjson "github.com/mailru/easyjson"
-	jlexer "github.com/mailru/easyjson/jlexer"
+	"github.com/mailru/easyjson"
 
 	"github.com/chromedp/cdproto"
 	"github.com/chromedp/cdproto/browser"
@@ -24,20 +23,34 @@ import (
 // the browser process runner, WebSocket clients, associated targets, and
 // network, page, and DOM events.
 type Browser struct {
+	// next is the next message id.
+	// NOTE: needs to be 64-bit aligned for 32-bit targets too, so be careful when moving this field.
+	// This will be eventually done by the compiler once https://github.com/golang/go/issues/599 is fixed.
+	next int64
+
 	// LostConnection is closed when the websocket connection to Chrome is
 	// dropped. This can be useful to make sure that Browser's context is
 	// cancelled (and the handler stopped) once the connection has failed.
 	LostConnection chan struct{}
 
+	// closingGracefully is closed by Close before gracefully shutting down
+	// the browser. This way, when the connection to the browser is lost and
+	// LostConnection is closed, we will know not to immediately kill the
+	// Chrome process. This is important to let the browser shut itself off,
+	// saving its state to disk.
+	closingGracefully chan struct{}
+
 	dialTimeout time.Duration
+
+	// pages keeps track of the attached targets, indexed by each's session
+	// ID. The only reason this is a field is so that the tests can check the
+	// map once a browser is closed.
+	pages map[target.SessionID]*Target
 
 	listenersMu sync.Mutex
 	listeners   []cancelableListener
 
 	conn Transport
-
-	// next is the next message id.
-	next int64
 
 	// newTabQueue is the queue used to create new target handlers, once a new
 	// tab is created and attached to. The newly created Target is sent back
@@ -67,7 +80,8 @@ type Browser struct {
 // directly, as the Allocator interface takes care of it.
 func NewBrowser(ctx context.Context, urlstr string, opts ...BrowserOption) (*Browser, error) {
 	b := &Browser{
-		LostConnection: make(chan struct{}),
+		LostConnection:    make(chan struct{}),
+		closingGracefully: make(chan struct{}),
 
 		dialTimeout: 10 * time.Second,
 
@@ -95,14 +109,30 @@ func NewBrowser(ctx context.Context, urlstr string, opts ...BrowserOption) (*Bro
 	}
 
 	var err error
-	urlstr = forceIP(urlstr)
 	b.conn, err = DialContext(dialCtx, urlstr, WithConnDebugf(b.dbgf))
 	if err != nil {
-		return nil, fmt.Errorf("could not dial %q: %v", urlstr, err)
+		return nil, fmt.Errorf("could not dial %q: %w", urlstr, err)
 	}
 
 	go b.run(ctx)
 	return b, nil
+}
+
+// Process returns the process object of the browser.
+//
+// It could be nil when the browser is allocated with RemoteAllocator.
+// It could be useful for a monitoring system to collect process metrics of the browser process.
+// (See [prometheus.NewProcessCollector] for an example).
+//
+// Example:
+//
+//	if process := chromedp.FromContext(ctx).Browser.Process(); process != nil {
+//		fmt.Printf("Browser PID: %v", process.Pid)
+//	}
+//
+// [prometheus.NewProcessCollector]: https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#NewProcessCollector
+func (b *Browser) Process() *os.Process {
+	return b.process
 }
 
 func (b *Browser) newExecutorForTarget(ctx context.Context, targetID target.ID, sessionID target.SessionID) (*Target, error) {
@@ -119,6 +149,8 @@ func (b *Browser) newExecutorForTarget(ctx context.Context, targetID target.ID, 
 
 		messageQueue: make(chan *cdproto.Message, 1024),
 		frames:       make(map[cdp.FrameID]*cdp.Frame),
+		execContexts: make(map[cdp.FrameID]runtime.ExecutionContextID),
+		cur:          cdp.FrameID(targetID),
 
 		logf: b.logf,
 		errf: b.errf,
@@ -135,10 +167,14 @@ func (b *Browser) newExecutorForTarget(ctx context.Context, targetID target.ID, 
 }
 
 func (b *Browser) Execute(ctx context.Context, method string, params easyjson.Marshaler, res easyjson.Unmarshaler) error {
+	// Certain methods aren't available to the user directly.
 	if method == browser.CommandClose {
-		return fmt.Errorf("to close the browser, cancel its context or use chromedp.Cancel")
+		return fmt.Errorf("to close the browser gracefully, use chromedp.Cancel")
 	}
+	return b.execute(ctx, method, params, res)
+}
 
+func (b *Browser) execute(ctx context.Context, method string, params easyjson.Marshaler, res easyjson.Unmarshaler) error {
 	id := atomic.AddInt64(&b.next, 1)
 	lctx, cancel := context.WithCancel(ctx)
 	ch := make(chan *cdproto.Message, 1)
@@ -199,32 +235,19 @@ func (b *Browser) run(ctx context.Context) {
 	// their session ID.
 	incomingQueue := make(chan *cdproto.Message, 1)
 
+	delTabQueue := make(chan target.SessionID, 1)
+
 	// This goroutine continuously reads events from the websocket
 	// connection. The separate goroutine is needed since a websocket read
 	// is blocking, so it cannot be used in a select statement.
 	go func() {
-		// Reuse the space for the read message, since in some cases
-		// like EventTargetReceivedMessageFromTarget we throw it away.
-		lexer := new(jlexer.Lexer)
+		// Signal to run and exit the browser cleanup goroutine.
+		defer close(b.LostConnection)
+
 		for {
 			msg := new(cdproto.Message)
 			if err := b.conn.Read(ctx, msg); err != nil {
-				// If the websocket failed, most likely Chrome was closed or
-				// crashed. Signal that so the entire browser handler can be
-				// stopped.
-				close(b.LostConnection)
 				return
-			}
-			if msg.Method == cdproto.EventRuntimeExceptionThrown {
-				ev := new(runtime.EventExceptionThrown)
-				*lexer = jlexer.Lexer{Data: msg.Params}
-				ev.UnmarshalJSON(msg.Params)
-				if err := lexer.Error(); err != nil {
-					b.errf("%s", err)
-					continue
-				}
-				b.errf("%+v\n", ev.ExceptionDetails)
-				continue
 			}
 
 			switch {
@@ -245,6 +268,10 @@ func (b *Browser) run(ctx context.Context) {
 				b.listeners = runListeners(b.listeners, ev)
 				b.listenersMu.Unlock()
 
+				if ev, ok := ev.(*target.EventDetachedFromTarget); ok {
+					delTabQueue <- ev.SessionID
+				}
+
 			case msg.ID != 0:
 				b.listenersMu.Lock()
 				b.listeners = runListeners(b.listeners, msg)
@@ -256,7 +283,7 @@ func (b *Browser) run(ctx context.Context) {
 		}
 	}()
 
-	pages := make(map[target.SessionID]*Target, 32)
+	b.pages = make(map[target.SessionID]*Target, 32)
 	for {
 		select {
 		case <-ctx.Done():
@@ -269,23 +296,28 @@ func (b *Browser) run(ctx context.Context) {
 			}
 
 		case t := <-b.newTabQueue:
-			if _, ok := pages[t.SessionID]; ok {
+			if _, ok := b.pages[t.SessionID]; ok {
 				b.errf("executor for %q already exists", t.SessionID)
 			}
-			pages[t.SessionID] = t
+			b.pages[t.SessionID] = t
+
+		case sessionID := <-delTabQueue:
+			if _, ok := b.pages[sessionID]; !ok {
+				b.errf("executor for %q doesn't exist", sessionID)
+			}
+			delete(b.pages, sessionID)
 
 		case m := <-incomingQueue:
-			page, ok := pages[m.SessionID]
+			page, ok := b.pages[m.SessionID]
 			if !ok {
 				// A page we recently closed still sending events.
 				continue
 			}
-			page.messageQueue <- m
-			if m.Method == cdproto.EventTargetDetachedFromTarget {
-				if _, ok := pages[m.SessionID]; !ok {
-					b.errf("executor for %q doesn't exist", m.SessionID)
-				}
-				delete(pages, m.SessionID)
+
+			select {
+			case <-ctx.Done():
+				return
+			case page.messageQueue <- m:
 			}
 
 		case <-b.LostConnection:

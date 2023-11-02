@@ -55,7 +55,8 @@ type EventExecutionContextCreated struct {
 //
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Runtime#event-executionContextDestroyed
 type EventExecutionContextDestroyed struct {
-	ExecutionContextID ExecutionContextID `json:"executionContextId"` // Id of the destroyed context
+	ExecutionContextID       ExecutionContextID `json:"executionContextId"`       // Id of the destroyed context
+	ExecutionContextUniqueID string             `json:"executionContextUniqueId"` // Unique Id of the destroyed context
 }
 
 // EventExecutionContextsCleared issued when all executionContexts were
@@ -69,6 +70,7 @@ type EventExecutionContextsCleared struct{}
 //
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Runtime#event-inspectRequested
 type EventInspectRequested struct {
-	Object *RemoteObject       `json:"object"`
-	Hints  easyjson.RawMessage `json:"hints"`
+	Object             *RemoteObject       `json:"object"`
+	Hints              easyjson.RawMessage `json:"hints"`
+	ExecutionContextID ExecutionContextID  `json:"executionContextId,omitempty"` // Identifier of the context where the call was made.
 }

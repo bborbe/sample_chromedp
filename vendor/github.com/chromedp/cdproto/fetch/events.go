@@ -12,7 +12,12 @@ import (
 // with one of continueRequest, failRequest or fulfillRequest. The stage of the
 // request can be determined by presence of responseErrorReason and
 // responseStatusCode -- the request is at the response stage if either of these
-// fields is present and in the request stage otherwise.
+// fields is present and in the request stage otherwise. Redirect responses and
+// subsequent requests are reported similarly to regular responses and requests.
+// Redirect responses may be distinguished by the value of responseStatusCode
+// (which is one of 301, 302, 303, 307, 308) along with presence of the location
+// header. Requests resulting from a redirect will have redirectedRequestId
+// field set.
 //
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Fetch#event-requestPaused
 type EventRequestPaused struct {
@@ -22,8 +27,10 @@ type EventRequestPaused struct {
 	ResourceType        network.ResourceType `json:"resourceType"`                  // How the requested resource will be used.
 	ResponseErrorReason network.ErrorReason  `json:"responseErrorReason,omitempty"` // Response error if intercepted at response stage.
 	ResponseStatusCode  int64                `json:"responseStatusCode,omitempty"`  // Response code if intercepted at response stage.
+	ResponseStatusText  string               `json:"responseStatusText,omitempty"`  // Response status text if intercepted at response stage.
 	ResponseHeaders     []*HeaderEntry       `json:"responseHeaders,omitempty"`     // Response headers if intercepted at the response stage.
-	NetworkID           RequestID            `json:"networkId,omitempty"`           // If the intercepted request had a corresponding Network.requestWillBeSent event fired for it, then this networkId will be the same as the requestId present in the requestWillBeSent event.
+	NetworkID           network.RequestID    `json:"networkId,omitempty"`           // If the intercepted request had a corresponding Network.requestWillBeSent event fired for it, then this networkId will be the same as the requestId present in the requestWillBeSent event.
+	RedirectedRequestID RequestID            `json:"redirectedRequestId,omitempty"` // If the request is due to a redirect response from the server, the id of the request that has caused the redirect.
 }
 
 // EventAuthRequired issued when the domain is enabled with

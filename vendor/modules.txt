@@ -1,9 +1,21 @@
-# github.com/chromedp/cdproto v0.0.0-20191009033829-c22f49c9ff0a
+# github.com/actgardner/gogen-avro/v9 v9.2.0
+## explicit; go 1.14
+github.com/actgardner/gogen-avro/v9/cmd/gogen-avro
+github.com/actgardner/gogen-avro/v9/generator
+github.com/actgardner/gogen-avro/v9/generator/flat
+github.com/actgardner/gogen-avro/v9/generator/flat/templates
+github.com/actgardner/gogen-avro/v9/parser
+github.com/actgardner/gogen-avro/v9/resolver
+github.com/actgardner/gogen-avro/v9/schema
+github.com/actgardner/gogen-avro/v9/schema/canonical
+github.com/actgardner/gogen-avro/v9/util
+# github.com/chromedp/cdproto v0.0.0-20231101223124-24f5925b5980
+## explicit; go 1.19
 github.com/chromedp/cdproto
 github.com/chromedp/cdproto/accessibility
 github.com/chromedp/cdproto/animation
-github.com/chromedp/cdproto/applicationcache
 github.com/chromedp/cdproto/audits
+github.com/chromedp/cdproto/autofill
 github.com/chromedp/cdproto/backgroundservice
 github.com/chromedp/cdproto/browser
 github.com/chromedp/cdproto/cachestorage
@@ -12,12 +24,15 @@ github.com/chromedp/cdproto/cdp
 github.com/chromedp/cdproto/css
 github.com/chromedp/cdproto/database
 github.com/chromedp/cdproto/debugger
+github.com/chromedp/cdproto/deviceaccess
 github.com/chromedp/cdproto/deviceorientation
 github.com/chromedp/cdproto/dom
 github.com/chromedp/cdproto/domdebugger
 github.com/chromedp/cdproto/domsnapshot
 github.com/chromedp/cdproto/domstorage
 github.com/chromedp/cdproto/emulation
+github.com/chromedp/cdproto/eventbreakpoints
+github.com/chromedp/cdproto/fedcm
 github.com/chromedp/cdproto/fetch
 github.com/chromedp/cdproto/headlessexperimental
 github.com/chromedp/cdproto/heapprofiler
@@ -33,6 +48,8 @@ github.com/chromedp/cdproto/network
 github.com/chromedp/cdproto/overlay
 github.com/chromedp/cdproto/page
 github.com/chromedp/cdproto/performance
+github.com/chromedp/cdproto/performancetimeline
+github.com/chromedp/cdproto/preload
 github.com/chromedp/cdproto/profiler
 github.com/chromedp/cdproto/runtime
 github.com/chromedp/cdproto/security
@@ -44,39 +61,80 @@ github.com/chromedp/cdproto/tethering
 github.com/chromedp/cdproto/tracing
 github.com/chromedp/cdproto/webaudio
 github.com/chromedp/cdproto/webauthn
-# github.com/chromedp/chromedp v0.5.1
+# github.com/chromedp/chromedp v0.9.3
+## explicit; go 1.16
 github.com/chromedp/chromedp
 github.com/chromedp/chromedp/device
 github.com/chromedp/chromedp/kb
-# github.com/gobwas/httphead v0.0.0-20180130184737-2c6c146eadee
+# github.com/chromedp/sysutil v1.0.0
+## explicit; go 1.15
+github.com/chromedp/sysutil
+# github.com/fsnotify/fsnotify v1.7.0
+## explicit; go 1.17
+github.com/fsnotify/fsnotify
+# github.com/gobwas/httphead v0.1.0
+## explicit; go 1.15
 github.com/gobwas/httphead
-# github.com/gobwas/pool v0.2.0
+# github.com/gobwas/pool v0.2.1
+## explicit
 github.com/gobwas/pool
 github.com/gobwas/pool/internal/pmath
 github.com/gobwas/pool/pbufio
 github.com/gobwas/pool/pbytes
-# github.com/gobwas/ws v1.0.2
+# github.com/gobwas/ws v1.3.0
+## explicit; go 1.15
 github.com/gobwas/ws
 github.com/gobwas/ws/wsutil
-# github.com/hpcloud/tail v1.0.0
-github.com/hpcloud/tail
-github.com/hpcloud/tail/ratelimiter
-github.com/hpcloud/tail/util
-github.com/hpcloud/tail/watch
-github.com/hpcloud/tail/winfile
-# github.com/knq/sysutil v0.0.0-20191005231841-15668db23d08
-github.com/knq/sysutil
-# github.com/mailru/easyjson v0.7.0
+# github.com/google/go-cmp v0.6.0
+## explicit; go 1.13
+github.com/google/go-cmp/cmp
+github.com/google/go-cmp/cmp/internal/diff
+github.com/google/go-cmp/cmp/internal/flags
+github.com/google/go-cmp/cmp/internal/function
+github.com/google/go-cmp/cmp/internal/value
+# github.com/incu6us/goimports-reviser v0.1.6
+## explicit; go 1.13
+github.com/incu6us/goimports-reviser
+github.com/incu6us/goimports-reviser/pkg/astutil
+github.com/incu6us/goimports-reviser/pkg/std
+github.com/incu6us/goimports-reviser/reviser
+# github.com/josharian/intern v1.0.0
+## explicit; go 1.5
+github.com/josharian/intern
+# github.com/kisielk/errcheck v1.6.3
+## explicit; go 1.14
+github.com/kisielk/errcheck
+github.com/kisielk/errcheck/errcheck
+# github.com/kr/pretty v0.3.1
+## explicit; go 1.12
+# github.com/mailru/easyjson v0.7.7
+## explicit; go 1.12
 github.com/mailru/easyjson
 github.com/mailru/easyjson/buffer
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
-# github.com/onsi/ginkgo v1.10.3
+# github.com/maxbrunsfeld/counterfeiter/v6 v6.7.0
+## explicit; go 1.19
+github.com/maxbrunsfeld/counterfeiter/v6
+github.com/maxbrunsfeld/counterfeiter/v6/arguments
+github.com/maxbrunsfeld/counterfeiter/v6/command
+github.com/maxbrunsfeld/counterfeiter/v6/generator
+# github.com/nxadm/tail v1.4.11
+## explicit; go 1.13
+github.com/nxadm/tail
+github.com/nxadm/tail/ratelimiter
+github.com/nxadm/tail/util
+github.com/nxadm/tail/watch
+github.com/nxadm/tail/winfile
+# github.com/onsi/ginkgo v1.16.5
+## explicit; go 1.16
 github.com/onsi/ginkgo
 github.com/onsi/ginkgo/config
+github.com/onsi/ginkgo/formatter
 github.com/onsi/ginkgo/internal/codelocation
 github.com/onsi/ginkgo/internal/containernode
 github.com/onsi/ginkgo/internal/failer
+github.com/onsi/ginkgo/internal/global
 github.com/onsi/ginkgo/internal/leafnodes
 github.com/onsi/ginkgo/internal/remote
 github.com/onsi/ginkgo/internal/spec
@@ -90,28 +148,51 @@ github.com/onsi/ginkgo/reporters/stenographer
 github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
-# github.com/onsi/gomega v1.7.1
+# github.com/onsi/gomega v1.29.0
+## explicit; go 1.18
 github.com/onsi/gomega
 github.com/onsi/gomega/format
 github.com/onsi/gomega/gbytes
 github.com/onsi/gomega/gexec
-github.com/onsi/gomega/internal/assertion
-github.com/onsi/gomega/internal/asyncassertion
-github.com/onsi/gomega/internal/oraclematcher
-github.com/onsi/gomega/internal/testingtsupport
+github.com/onsi/gomega/internal
+github.com/onsi/gomega/internal/gutil
 github.com/onsi/gomega/matchers
 github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
 github.com/onsi/gomega/matchers/support/goraph/edge
 github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
-# golang.org/x/net v0.7.0
+# github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785
+## explicit; go 1.13
+# github.com/pkg/errors v0.9.1
+## explicit
+github.com/pkg/errors
+# github.com/rogpeppe/go-internal v1.11.0
+## explicit; go 1.19
+# golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
+## explicit; go 1.11
+golang.org/x/lint
+golang.org/x/lint/golint
+# golang.org/x/mod v0.12.0
+## explicit; go 1.17
+golang.org/x/mod/internal/lazyregexp
+golang.org/x/mod/module
+golang.org/x/mod/semver
+# golang.org/x/net v0.17.0
+## explicit; go 1.17
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sys v0.5.0
+# golang.org/x/sync v0.3.0
+## explicit; go 1.17
+golang.org/x/sync/errgroup
+# golang.org/x/sys v0.13.0
+## explicit; go 1.17
+golang.org/x/sys/execabs
 golang.org/x/sys/unix
-# golang.org/x/text v0.7.0
+golang.org/x/sys/windows
+# golang.org/x/text v0.13.0
+## explicit; go 1.17
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
@@ -129,9 +210,58 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
-# gopkg.in/fsnotify.v1 v1.4.7
-gopkg.in/fsnotify.v1
+# golang.org/x/tools v0.12.1-0.20230815132531-74c255bcf846
+## explicit; go 1.18
+golang.org/x/tools/go/analysis
+golang.org/x/tools/go/ast/astutil
+golang.org/x/tools/go/buildutil
+golang.org/x/tools/go/callgraph
+golang.org/x/tools/go/callgraph/cha
+golang.org/x/tools/go/callgraph/vta
+golang.org/x/tools/go/callgraph/vta/internal/trie
+golang.org/x/tools/go/gcexportdata
+golang.org/x/tools/go/internal/cgo
+golang.org/x/tools/go/internal/packagesdriver
+golang.org/x/tools/go/loader
+golang.org/x/tools/go/packages
+golang.org/x/tools/go/ssa
+golang.org/x/tools/go/ssa/ssautil
+golang.org/x/tools/go/types/objectpath
+golang.org/x/tools/go/types/typeutil
+golang.org/x/tools/imports
+golang.org/x/tools/internal/event
+golang.org/x/tools/internal/event/core
+golang.org/x/tools/internal/event/keys
+golang.org/x/tools/internal/event/label
+golang.org/x/tools/internal/event/tag
+golang.org/x/tools/internal/fastwalk
+golang.org/x/tools/internal/gcimporter
+golang.org/x/tools/internal/gocommand
+golang.org/x/tools/internal/gopathwalk
+golang.org/x/tools/internal/imports
+golang.org/x/tools/internal/packagesinternal
+golang.org/x/tools/internal/pkgbits
+golang.org/x/tools/internal/tokeninternal
+golang.org/x/tools/internal/typeparams
+golang.org/x/tools/internal/typesinternal
+# golang.org/x/vuln v1.0.1
+## explicit; go 1.18
+golang.org/x/vuln/cmd/govulncheck
+golang.org/x/vuln/internal
+golang.org/x/vuln/internal/client
+golang.org/x/vuln/internal/derrors
+golang.org/x/vuln/internal/govulncheck
+golang.org/x/vuln/internal/osv
+golang.org/x/vuln/internal/scan
+golang.org/x/vuln/internal/semver
+golang.org/x/vuln/internal/vulncheck
+golang.org/x/vuln/internal/vulncheck/internal/buildinfo
+golang.org/x/vuln/internal/vulncheck/internal/gosym
+golang.org/x/vuln/internal/web
+golang.org/x/vuln/scan
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
+## explicit
 gopkg.in/tomb.v1
-# gopkg.in/yaml.v2 v2.4.0
-gopkg.in/yaml.v2
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3

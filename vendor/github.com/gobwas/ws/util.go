@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"reflect"
-	"unsafe"
 
 	"github.com/gobwas/httphead"
 )
@@ -41,19 +39,6 @@ func SelectEqual(v string) func(string) bool {
 	}
 }
 
-func strToBytes(str string) (bts []byte) {
-	s := (*reflect.StringHeader)(unsafe.Pointer(&str))
-	b := (*reflect.SliceHeader)(unsafe.Pointer(&bts))
-	b.Data = s.Data
-	b.Len = s.Len
-	b.Cap = s.Len
-	return
-}
-
-func btsToString(bts []byte) (str string) {
-	return *(*string)(unsafe.Pointer(&bts))
-}
-
 // asciiToInt converts bytes to int.
 func asciiToInt(bts []byte) (ret int, err error) {
 	// ASCII numbers all start with the high-order bits 0011.
@@ -73,7 +58,7 @@ func asciiToInt(bts []byte) (ret int, err error) {
 }
 
 // pow for integers implementation.
-// See Donald Knuth, The Art of Computer Programming, Volume 2, Section 4.6.3
+// See Donald Knuth, The Art of Computer Programming, Volume 2, Section 4.6.3.
 func pow(a, b int) int {
 	p := 1
 	for b > 0 {
@@ -113,10 +98,10 @@ func strHasToken(header, token string) (has bool) {
 
 func btsHasToken(header, token []byte) (has bool) {
 	httphead.ScanTokens(header, func(v []byte) bool {
-		has = btsEqualFold(v, token)
+		has = bytes.EqualFold(v, token)
 		return !has
 	})
-	return
+	return has
 }
 
 const (
@@ -197,47 +182,6 @@ func readLine(br *bufio.Reader) ([]byte, error) {
 
 		return line, nil
 	}
-}
-
-// strEqualFold checks s to be case insensitive equal to p.
-// Note that p must be only ascii letters. That is, every byte in p belongs to
-// range ['a','z'] or ['A','Z'].
-func strEqualFold(s, p string) bool {
-	return btsEqualFold(strToBytes(s), strToBytes(p))
-}
-
-// btsEqualFold checks s to be case insensitive equal to p.
-// Note that p must be only ascii letters. That is, every byte in p belongs to
-// range ['a','z'] or ['A','Z'].
-func btsEqualFold(s, p []byte) bool {
-	if len(s) != len(p) {
-		return false
-	}
-	n := len(s)
-	// Prepare manual conversion on bytes that not lay in uint64.
-	m := n % 8
-	for i := 0; i < m; i++ {
-		if s[i]|toLower != p[i]|toLower {
-			return false
-		}
-	}
-	// Iterate over uint64 parts of s.
-	n = (n - m) >> 3
-	if n == 0 {
-		// There are no more bytes to compare.
-		return true
-	}
-
-	for i := 0; i < n; i++ {
-		x := m + (i << 3)
-		av := *(*uint64)(unsafe.Pointer(&s[x]))
-		bv := *(*uint64)(unsafe.Pointer(&p[x]))
-		if av|toLower8 != bv|toLower8 {
-			return false
-		}
-	}
-
-	return true
 }
 
 func min(a, b int) int {

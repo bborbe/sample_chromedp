@@ -56,7 +56,7 @@ func EmulateLandscape(p1 *emulation.SetDeviceMetricsOverrideParams, p2 *emulatio
 }
 
 // EmulatePortrait is an emulate viewport option to set the device viewport
-// screen orentation in portrait primary mode and an angle of 0.
+// screen orientation in portrait primary mode and an angle of 0.
 func EmulatePortrait(p1 *emulation.SetDeviceMetricsOverrideParams, p2 *emulation.SetTouchEmulationEnabledParams) {
 	EmulateOrientation(emulation.OrientationTypePortraitPrimary, 0)(p1, p2)
 }
@@ -82,8 +82,7 @@ func ResetViewport() EmulateAction {
 
 // Device is the shared interface for known device types.
 //
-// See: github.com/chromedp/chromedp/device for a set of off-the-shelf devices
-// and modes.
+// See [device] for a set of off-the-shelf devices and modes.
 type Device interface {
 	// Device returns the device info.
 	Device() device.Info
@@ -91,8 +90,7 @@ type Device interface {
 
 // Emulate is an action to emulate a specific device.
 //
-// See: github.com/chromedp/chromedp/device for a set of off-the-shelf devices
-// and modes.
+// See [device] for a set of off-the-shelf devices and modes.
 func Emulate(device Device) EmulateAction {
 	d := device.Device()
 

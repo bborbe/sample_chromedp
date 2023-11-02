@@ -14,8 +14,8 @@ import (
 
 	"github.com/chromedp/cdproto/accessibility"
 	"github.com/chromedp/cdproto/animation"
-	"github.com/chromedp/cdproto/applicationcache"
 	"github.com/chromedp/cdproto/audits"
+	"github.com/chromedp/cdproto/autofill"
 	"github.com/chromedp/cdproto/backgroundservice"
 	"github.com/chromedp/cdproto/browser"
 	"github.com/chromedp/cdproto/cachestorage"
@@ -24,12 +24,15 @@ import (
 	"github.com/chromedp/cdproto/css"
 	"github.com/chromedp/cdproto/database"
 	"github.com/chromedp/cdproto/debugger"
+	"github.com/chromedp/cdproto/deviceaccess"
 	"github.com/chromedp/cdproto/deviceorientation"
 	"github.com/chromedp/cdproto/dom"
 	"github.com/chromedp/cdproto/domdebugger"
 	"github.com/chromedp/cdproto/domsnapshot"
 	"github.com/chromedp/cdproto/domstorage"
 	"github.com/chromedp/cdproto/emulation"
+	"github.com/chromedp/cdproto/eventbreakpoints"
+	"github.com/chromedp/cdproto/fedcm"
 	"github.com/chromedp/cdproto/fetch"
 	"github.com/chromedp/cdproto/headlessexperimental"
 	"github.com/chromedp/cdproto/heapprofiler"
@@ -45,6 +48,8 @@ import (
 	"github.com/chromedp/cdproto/overlay"
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/cdproto/performance"
+	"github.com/chromedp/cdproto/performancetimeline"
+	"github.com/chromedp/cdproto/preload"
 	"github.com/chromedp/cdproto/profiler"
 	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/cdproto/security"
@@ -79,6 +84,12 @@ const (
 	CommandAccessibilityEnable                             = accessibility.CommandEnable
 	CommandAccessibilityGetPartialAXTree                   = accessibility.CommandGetPartialAXTree
 	CommandAccessibilityGetFullAXTree                      = accessibility.CommandGetFullAXTree
+	CommandAccessibilityGetRootAXNode                      = accessibility.CommandGetRootAXNode
+	CommandAccessibilityGetAXNodeAndAncestors              = accessibility.CommandGetAXNodeAndAncestors
+	CommandAccessibilityGetChildAXNodes                    = accessibility.CommandGetChildAXNodes
+	CommandAccessibilityQueryAXTree                        = accessibility.CommandQueryAXTree
+	EventAccessibilityLoadComplete                         = "Accessibility.loadComplete"
+	EventAccessibilityNodesUpdated                         = "Accessibility.nodesUpdated"
 	CommandAnimationDisable                                = animation.CommandDisable
 	CommandAnimationEnable                                 = animation.CommandEnable
 	CommandAnimationGetCurrentTime                         = animation.CommandGetCurrentTime
@@ -92,13 +103,17 @@ const (
 	EventAnimationAnimationCanceled                        = "Animation.animationCanceled"
 	EventAnimationAnimationCreated                         = "Animation.animationCreated"
 	EventAnimationAnimationStarted                         = "Animation.animationStarted"
-	CommandApplicationCacheEnable                          = applicationcache.CommandEnable
-	CommandApplicationCacheGetApplicationCacheForFrame     = applicationcache.CommandGetApplicationCacheForFrame
-	CommandApplicationCacheGetFramesWithManifests          = applicationcache.CommandGetFramesWithManifests
-	CommandApplicationCacheGetManifestForFrame             = applicationcache.CommandGetManifestForFrame
-	EventApplicationCacheApplicationCacheStatusUpdated     = "ApplicationCache.applicationCacheStatusUpdated"
-	EventApplicationCacheNetworkStateUpdated               = "ApplicationCache.networkStateUpdated"
 	CommandAuditsGetEncodedResponse                        = audits.CommandGetEncodedResponse
+	CommandAuditsDisable                                   = audits.CommandDisable
+	CommandAuditsEnable                                    = audits.CommandEnable
+	CommandAuditsCheckContrast                             = audits.CommandCheckContrast
+	CommandAuditsCheckFormsIssues                          = audits.CommandCheckFormsIssues
+	EventAuditsIssueAdded                                  = "Audits.issueAdded"
+	CommandAutofillTrigger                                 = autofill.CommandTrigger
+	CommandAutofillSetAddresses                            = autofill.CommandSetAddresses
+	CommandAutofillDisable                                 = autofill.CommandDisable
+	CommandAutofillEnable                                  = autofill.CommandEnable
+	EventAutofillAddressFormFilled                         = "Autofill.addressFormFilled"
 	CommandBackgroundServiceStartObserving                 = backgroundservice.CommandStartObserving
 	CommandBackgroundServiceStopObserving                  = backgroundservice.CommandStopObserving
 	CommandBackgroundServiceSetRecording                   = backgroundservice.CommandSetRecording
@@ -108,6 +123,8 @@ const (
 	CommandBrowserSetPermission                            = browser.CommandSetPermission
 	CommandBrowserGrantPermissions                         = browser.CommandGrantPermissions
 	CommandBrowserResetPermissions                         = browser.CommandResetPermissions
+	CommandBrowserSetDownloadBehavior                      = browser.CommandSetDownloadBehavior
+	CommandBrowserCancelDownload                           = browser.CommandCancelDownload
 	CommandBrowserClose                                    = browser.CommandClose
 	CommandBrowserCrash                                    = browser.CommandCrash
 	CommandBrowserCrashGpuProcess                          = browser.CommandCrashGpuProcess
@@ -119,6 +136,10 @@ const (
 	CommandBrowserGetWindowForTarget                       = browser.CommandGetWindowForTarget
 	CommandBrowserSetWindowBounds                          = browser.CommandSetWindowBounds
 	CommandBrowserSetDockTile                              = browser.CommandSetDockTile
+	CommandBrowserExecuteBrowserCommand                    = browser.CommandExecuteBrowserCommand
+	CommandBrowserAddPrivacySandboxEnrollmentOverride      = browser.CommandAddPrivacySandboxEnrollmentOverride
+	EventBrowserDownloadWillBegin                          = "Browser.downloadWillBegin"
+	EventBrowserDownloadProgress                           = "Browser.downloadProgress"
 	CommandCSSAddRule                                      = css.CommandAddRule
 	CommandCSSCollectClassNames                            = css.CommandCollectClassNames
 	CommandCSSCreateStyleSheet                             = css.CommandCreateStyleSheet
@@ -132,15 +153,23 @@ const (
 	CommandCSSGetMediaQueries                              = css.CommandGetMediaQueries
 	CommandCSSGetPlatformFontsForNode                      = css.CommandGetPlatformFontsForNode
 	CommandCSSGetStyleSheetText                            = css.CommandGetStyleSheetText
+	CommandCSSGetLayersForNode                             = css.CommandGetLayersForNode
+	CommandCSSTrackComputedStyleUpdates                    = css.CommandTrackComputedStyleUpdates
+	CommandCSSTakeComputedStyleUpdates                     = css.CommandTakeComputedStyleUpdates
 	CommandCSSSetEffectivePropertyValueForNode             = css.CommandSetEffectivePropertyValueForNode
+	CommandCSSSetPropertyRulePropertyName                  = css.CommandSetPropertyRulePropertyName
 	CommandCSSSetKeyframeKey                               = css.CommandSetKeyframeKey
 	CommandCSSSetMediaText                                 = css.CommandSetMediaText
+	CommandCSSSetContainerQueryText                        = css.CommandSetContainerQueryText
+	CommandCSSSetSupportsText                              = css.CommandSetSupportsText
+	CommandCSSSetScopeText                                 = css.CommandSetScopeText
 	CommandCSSSetRuleSelector                              = css.CommandSetRuleSelector
 	CommandCSSSetStyleSheetText                            = css.CommandSetStyleSheetText
 	CommandCSSSetStyleTexts                                = css.CommandSetStyleTexts
 	CommandCSSStartRuleUsageTracking                       = css.CommandStartRuleUsageTracking
 	CommandCSSStopRuleUsageTracking                        = css.CommandStopRuleUsageTracking
 	CommandCSSTakeCoverageDelta                            = css.CommandTakeCoverageDelta
+	CommandCSSSetLocalFontsEnabled                         = css.CommandSetLocalFontsEnabled
 	EventCSSFontsUpdated                                   = "CSS.fontsUpdated"
 	EventCSSMediaQueryResultChanged                        = "CSS.mediaQueryResultChanged"
 	EventCSSStyleSheetAdded                                = "CSS.styleSheetAdded"
@@ -154,6 +183,7 @@ const (
 	CommandCastEnable                                      = cast.CommandEnable
 	CommandCastDisable                                     = cast.CommandDisable
 	CommandCastSetSinkToUse                                = cast.CommandSetSinkToUse
+	CommandCastStartDesktopMirroring                       = cast.CommandStartDesktopMirroring
 	CommandCastStartTabMirroring                           = cast.CommandStartTabMirroring
 	CommandCastStopCasting                                 = cast.CommandStopCasting
 	EventCastSinksUpdated                                  = "Cast.sinksUpdated"
@@ -161,6 +191,7 @@ const (
 	CommandDOMCollectClassNamesFromSubtree                 = dom.CommandCollectClassNamesFromSubtree
 	CommandDOMCopyTo                                       = dom.CommandCopyTo
 	CommandDOMDescribeNode                                 = dom.CommandDescribeNode
+	CommandDOMScrollIntoViewIfNeeded                       = dom.CommandScrollIntoViewIfNeeded
 	CommandDOMDisable                                      = dom.CommandDisable
 	CommandDOMDiscardSearchResults                         = dom.CommandDiscardSearchResults
 	CommandDOMEnable                                       = dom.CommandEnable
@@ -169,7 +200,7 @@ const (
 	CommandDOMGetBoxModel                                  = dom.CommandGetBoxModel
 	CommandDOMGetContentQuads                              = dom.CommandGetContentQuads
 	CommandDOMGetDocument                                  = dom.CommandGetDocument
-	CommandDOMGetFlattenedDocument                         = dom.CommandGetFlattenedDocument
+	CommandDOMGetNodesForSubtreeByStyle                    = dom.CommandGetNodesForSubtreeByStyle
 	CommandDOMGetNodeForLocation                           = dom.CommandGetNodeForLocation
 	CommandDOMGetOuterHTML                                 = dom.CommandGetOuterHTML
 	CommandDOMGetRelayoutBoundary                          = dom.CommandGetRelayoutBoundary
@@ -178,9 +209,10 @@ const (
 	CommandDOMMoveTo                                       = dom.CommandMoveTo
 	CommandDOMPerformSearch                                = dom.CommandPerformSearch
 	CommandDOMPushNodeByPathToFrontend                     = dom.CommandPushNodeByPathToFrontend
-	CommandDOMPushNodesByBackendIdsToFrontend              = dom.CommandPushNodesByBackendIdsToFrontend
+	CommandDOMPushNodesByBackendIDsToFrontend              = dom.CommandPushNodesByBackendIDsToFrontend
 	CommandDOMQuerySelector                                = dom.CommandQuerySelector
 	CommandDOMQuerySelectorAll                             = dom.CommandQuerySelectorAll
+	CommandDOMGetTopLayerElements                          = dom.CommandGetTopLayerElements
 	CommandDOMRedo                                         = dom.CommandRedo
 	CommandDOMRemoveAttribute                              = dom.CommandRemoveAttribute
 	CommandDOMRemoveNode                                   = dom.CommandRemoveNode
@@ -199,6 +231,8 @@ const (
 	CommandDOMSetOuterHTML                                 = dom.CommandSetOuterHTML
 	CommandDOMUndo                                         = dom.CommandUndo
 	CommandDOMGetFrameOwner                                = dom.CommandGetFrameOwner
+	CommandDOMGetContainerForNode                          = dom.CommandGetContainerForNode
+	CommandDOMGetQueryingDescendantsForContainer           = dom.CommandGetQueryingDescendantsForContainer
 	EventDOMAttributeModified                              = "DOM.attributeModified"
 	EventDOMAttributeRemoved                               = "DOM.attributeRemoved"
 	EventDOMCharacterDataModified                          = "DOM.characterDataModified"
@@ -209,6 +243,7 @@ const (
 	EventDOMDocumentUpdated                                = "DOM.documentUpdated"
 	EventDOMInlineStyleInvalidated                         = "DOM.inlineStyleInvalidated"
 	EventDOMPseudoElementAdded                             = "DOM.pseudoElementAdded"
+	EventDOMTopLayerElementsUpdated                        = "DOM.topLayerElementsUpdated"
 	EventDOMPseudoElementRemoved                           = "DOM.pseudoElementRemoved"
 	EventDOMSetChildNodes                                  = "DOM.setChildNodes"
 	EventDOMShadowRootPopped                               = "DOM.shadowRootPopped"
@@ -216,11 +251,10 @@ const (
 	CommandDOMDebuggerGetEventListeners                    = domdebugger.CommandGetEventListeners
 	CommandDOMDebuggerRemoveDOMBreakpoint                  = domdebugger.CommandRemoveDOMBreakpoint
 	CommandDOMDebuggerRemoveEventListenerBreakpoint        = domdebugger.CommandRemoveEventListenerBreakpoint
-	CommandDOMDebuggerRemoveInstrumentationBreakpoint      = domdebugger.CommandRemoveInstrumentationBreakpoint
 	CommandDOMDebuggerRemoveXHRBreakpoint                  = domdebugger.CommandRemoveXHRBreakpoint
+	CommandDOMDebuggerSetBreakOnCSPViolation               = domdebugger.CommandSetBreakOnCSPViolation
 	CommandDOMDebuggerSetDOMBreakpoint                     = domdebugger.CommandSetDOMBreakpoint
 	CommandDOMDebuggerSetEventListenerBreakpoint           = domdebugger.CommandSetEventListenerBreakpoint
-	CommandDOMDebuggerSetInstrumentationBreakpoint         = domdebugger.CommandSetInstrumentationBreakpoint
 	CommandDOMDebuggerSetXHRBreakpoint                     = domdebugger.CommandSetXHRBreakpoint
 	CommandDOMSnapshotDisable                              = domsnapshot.CommandDisable
 	CommandDOMSnapshotEnable                               = domsnapshot.CommandEnable
@@ -246,7 +280,8 @@ const (
 	CommandDebuggerEvaluateOnCallFrame                     = debugger.CommandEvaluateOnCallFrame
 	CommandDebuggerGetPossibleBreakpoints                  = debugger.CommandGetPossibleBreakpoints
 	CommandDebuggerGetScriptSource                         = debugger.CommandGetScriptSource
-	CommandDebuggerGetWasmBytecode                         = debugger.CommandGetWasmBytecode
+	CommandDebuggerDisassembleWasmModule                   = debugger.CommandDisassembleWasmModule
+	CommandDebuggerNextWasmDisassemblyChunk                = debugger.CommandNextWasmDisassemblyChunk
 	CommandDebuggerGetStackTrace                           = debugger.CommandGetStackTrace
 	CommandDebuggerPause                                   = debugger.CommandPause
 	CommandDebuggerRemoveBreakpoint                        = debugger.CommandRemoveBreakpoint
@@ -274,6 +309,11 @@ const (
 	EventDebuggerResumed                                   = "Debugger.resumed"
 	EventDebuggerScriptFailedToParse                       = "Debugger.scriptFailedToParse"
 	EventDebuggerScriptParsed                              = "Debugger.scriptParsed"
+	CommandDeviceAccessEnable                              = deviceaccess.CommandEnable
+	CommandDeviceAccessDisable                             = deviceaccess.CommandDisable
+	CommandDeviceAccessSelectPrompt                        = deviceaccess.CommandSelectPrompt
+	CommandDeviceAccessCancelPrompt                        = deviceaccess.CommandCancelPrompt
+	EventDeviceAccessDeviceRequestPrompted                 = "DeviceAccess.deviceRequestPrompted"
 	CommandDeviceOrientationClearDeviceOrientationOverride = deviceorientation.CommandClearDeviceOrientationOverride
 	CommandDeviceOrientationSetDeviceOrientationOverride   = deviceorientation.CommandSetDeviceOrientationOverride
 	CommandEmulationCanEmulate                             = emulation.CommandCanEmulate
@@ -281,6 +321,7 @@ const (
 	CommandEmulationClearGeolocationOverride               = emulation.CommandClearGeolocationOverride
 	CommandEmulationResetPageScaleFactor                   = emulation.CommandResetPageScaleFactor
 	CommandEmulationSetFocusEmulationEnabled               = emulation.CommandSetFocusEmulationEnabled
+	CommandEmulationSetAutoDarkModeOverride                = emulation.CommandSetAutoDarkModeOverride
 	CommandEmulationSetCPUThrottlingRate                   = emulation.CommandSetCPUThrottlingRate
 	CommandEmulationSetDefaultBackgroundColorOverride      = emulation.CommandSetDefaultBackgroundColorOverride
 	CommandEmulationSetDeviceMetricsOverride               = emulation.CommandSetDeviceMetricsOverride
@@ -288,27 +329,46 @@ const (
 	CommandEmulationSetDocumentCookieDisabled              = emulation.CommandSetDocumentCookieDisabled
 	CommandEmulationSetEmitTouchEventsForMouse             = emulation.CommandSetEmitTouchEventsForMouse
 	CommandEmulationSetEmulatedMedia                       = emulation.CommandSetEmulatedMedia
+	CommandEmulationSetEmulatedVisionDeficiency            = emulation.CommandSetEmulatedVisionDeficiency
 	CommandEmulationSetGeolocationOverride                 = emulation.CommandSetGeolocationOverride
+	CommandEmulationGetOverriddenSensorInformation         = emulation.CommandGetOverriddenSensorInformation
+	CommandEmulationSetSensorOverrideEnabled               = emulation.CommandSetSensorOverrideEnabled
+	CommandEmulationSetSensorOverrideReadings              = emulation.CommandSetSensorOverrideReadings
+	CommandEmulationSetIdleOverride                        = emulation.CommandSetIdleOverride
+	CommandEmulationClearIdleOverride                      = emulation.CommandClearIdleOverride
 	CommandEmulationSetPageScaleFactor                     = emulation.CommandSetPageScaleFactor
 	CommandEmulationSetScriptExecutionDisabled             = emulation.CommandSetScriptExecutionDisabled
 	CommandEmulationSetTouchEmulationEnabled               = emulation.CommandSetTouchEmulationEnabled
 	CommandEmulationSetVirtualTimePolicy                   = emulation.CommandSetVirtualTimePolicy
+	CommandEmulationSetLocaleOverride                      = emulation.CommandSetLocaleOverride
 	CommandEmulationSetTimezoneOverride                    = emulation.CommandSetTimezoneOverride
+	CommandEmulationSetDisabledImageTypes                  = emulation.CommandSetDisabledImageTypes
+	CommandEmulationSetHardwareConcurrencyOverride         = emulation.CommandSetHardwareConcurrencyOverride
 	CommandEmulationSetUserAgentOverride                   = emulation.CommandSetUserAgentOverride
+	CommandEmulationSetAutomationOverride                  = emulation.CommandSetAutomationOverride
 	EventEmulationVirtualTimeBudgetExpired                 = "Emulation.virtualTimeBudgetExpired"
+	CommandEventBreakpointsSetInstrumentationBreakpoint    = eventbreakpoints.CommandSetInstrumentationBreakpoint
+	CommandEventBreakpointsRemoveInstrumentationBreakpoint = eventbreakpoints.CommandRemoveInstrumentationBreakpoint
+	CommandEventBreakpointsDisable                         = eventbreakpoints.CommandDisable
+	CommandFedCmEnable                                     = fedcm.CommandEnable
+	CommandFedCmDisable                                    = fedcm.CommandDisable
+	CommandFedCmSelectAccount                              = fedcm.CommandSelectAccount
+	CommandFedCmConfirmIdpLogin                            = fedcm.CommandConfirmIdpLogin
+	CommandFedCmDismissDialog                              = fedcm.CommandDismissDialog
+	CommandFedCmResetCooldown                              = fedcm.CommandResetCooldown
+	EventFedCmDialogShown                                  = "FedCm.dialogShown"
 	CommandFetchDisable                                    = fetch.CommandDisable
 	CommandFetchEnable                                     = fetch.CommandEnable
 	CommandFetchFailRequest                                = fetch.CommandFailRequest
 	CommandFetchFulfillRequest                             = fetch.CommandFulfillRequest
 	CommandFetchContinueRequest                            = fetch.CommandContinueRequest
 	CommandFetchContinueWithAuth                           = fetch.CommandContinueWithAuth
+	CommandFetchContinueResponse                           = fetch.CommandContinueResponse
 	CommandFetchGetResponseBody                            = fetch.CommandGetResponseBody
 	CommandFetchTakeResponseBodyAsStream                   = fetch.CommandTakeResponseBodyAsStream
 	EventFetchRequestPaused                                = "Fetch.requestPaused"
 	EventFetchAuthRequired                                 = "Fetch.authRequired"
 	CommandHeadlessExperimentalBeginFrame                  = headlessexperimental.CommandBeginFrame
-	CommandHeadlessExperimentalDisable                     = headlessexperimental.CommandDisable
-	CommandHeadlessExperimentalEnable                      = headlessexperimental.CommandEnable
 	CommandHeapProfilerAddInspectedHeapObject              = heapprofiler.CommandAddInspectedHeapObject
 	CommandHeapProfilerCollectGarbage                      = heapprofiler.CommandCollectGarbage
 	CommandHeapProfilerDisable                             = heapprofiler.CommandDisable
@@ -338,15 +398,20 @@ const (
 	CommandIndexedDBGetMetadata                            = indexeddb.CommandGetMetadata
 	CommandIndexedDBRequestDatabase                        = indexeddb.CommandRequestDatabase
 	CommandIndexedDBRequestDatabaseNames                   = indexeddb.CommandRequestDatabaseNames
+	CommandInputDispatchDragEvent                          = input.CommandDispatchDragEvent
 	CommandInputDispatchKeyEvent                           = input.CommandDispatchKeyEvent
 	CommandInputInsertText                                 = input.CommandInsertText
+	CommandInputImeSetComposition                          = input.CommandImeSetComposition
 	CommandInputDispatchMouseEvent                         = input.CommandDispatchMouseEvent
 	CommandInputDispatchTouchEvent                         = input.CommandDispatchTouchEvent
+	CommandInputCancelDragging                             = input.CommandCancelDragging
 	CommandInputEmulateTouchFromMouseEvent                 = input.CommandEmulateTouchFromMouseEvent
 	CommandInputSetIgnoreInputEvents                       = input.CommandSetIgnoreInputEvents
+	CommandInputSetInterceptDrags                          = input.CommandSetInterceptDrags
 	CommandInputSynthesizePinchGesture                     = input.CommandSynthesizePinchGesture
 	CommandInputSynthesizeScrollGesture                    = input.CommandSynthesizeScrollGesture
 	CommandInputSynthesizeTapGesture                       = input.CommandSynthesizeTapGesture
+	EventInputDragIntercepted                              = "Input.dragIntercepted"
 	CommandInspectorDisable                                = inspector.CommandDisable
 	CommandInspectorEnable                                 = inspector.CommandEnable
 	EventInspectorDetached                                 = "Inspector.detached"
@@ -373,6 +438,8 @@ const (
 	CommandMediaDisable                                    = media.CommandDisable
 	EventMediaPlayerPropertiesChanged                      = "Media.playerPropertiesChanged"
 	EventMediaPlayerEventsAdded                            = "Media.playerEventsAdded"
+	EventMediaPlayerMessagesLogged                         = "Media.playerMessagesLogged"
+	EventMediaPlayerErrorsRaised                           = "Media.playerErrorsRaised"
 	EventMediaPlayersCreated                               = "Media.playersCreated"
 	CommandMemoryGetDOMCounters                            = memory.CommandGetDOMCounters
 	CommandMemoryPrepareForLeakDetection                   = memory.CommandPrepareForLeakDetection
@@ -384,13 +451,14 @@ const (
 	CommandMemoryGetAllTimeSamplingProfile                 = memory.CommandGetAllTimeSamplingProfile
 	CommandMemoryGetBrowserSamplingProfile                 = memory.CommandGetBrowserSamplingProfile
 	CommandMemoryGetSamplingProfile                        = memory.CommandGetSamplingProfile
+	CommandNetworkSetAcceptedEncodings                     = network.CommandSetAcceptedEncodings
+	CommandNetworkClearAcceptedEncodingsOverride           = network.CommandClearAcceptedEncodingsOverride
 	CommandNetworkClearBrowserCache                        = network.CommandClearBrowserCache
 	CommandNetworkClearBrowserCookies                      = network.CommandClearBrowserCookies
 	CommandNetworkDeleteCookies                            = network.CommandDeleteCookies
 	CommandNetworkDisable                                  = network.CommandDisable
 	CommandNetworkEmulateNetworkConditions                 = network.CommandEmulateNetworkConditions
 	CommandNetworkEnable                                   = network.CommandEnable
-	CommandNetworkGetAllCookies                            = network.CommandGetAllCookies
 	CommandNetworkGetCertificate                           = network.CommandGetCertificate
 	CommandNetworkGetCookies                               = network.CommandGetCookies
 	CommandNetworkGetResponseBody                          = network.CommandGetResponseBody
@@ -404,8 +472,11 @@ const (
 	CommandNetworkSetCacheDisabled                         = network.CommandSetCacheDisabled
 	CommandNetworkSetCookie                                = network.CommandSetCookie
 	CommandNetworkSetCookies                               = network.CommandSetCookies
-	CommandNetworkSetDataSizeLimitsForTest                 = network.CommandSetDataSizeLimitsForTest
 	CommandNetworkSetExtraHTTPHeaders                      = network.CommandSetExtraHTTPHeaders
+	CommandNetworkSetAttachDebugStack                      = network.CommandSetAttachDebugStack
+	CommandNetworkGetSecurityIsolationStatus               = network.CommandGetSecurityIsolationStatus
+	CommandNetworkEnableReportingAPI                       = network.CommandEnableReportingAPI
+	CommandNetworkLoadNetworkResource                      = network.CommandLoadNetworkResource
 	EventNetworkDataReceived                               = "Network.dataReceived"
 	EventNetworkEventSourceMessageReceived                 = "Network.eventSourceMessageReceived"
 	EventNetworkLoadingFailed                              = "Network.loadingFailed"
@@ -422,26 +493,46 @@ const (
 	EventNetworkWebSocketFrameSent                         = "Network.webSocketFrameSent"
 	EventNetworkWebSocketHandshakeResponseReceived         = "Network.webSocketHandshakeResponseReceived"
 	EventNetworkWebSocketWillSendHandshakeRequest          = "Network.webSocketWillSendHandshakeRequest"
+	EventNetworkWebTransportCreated                        = "Network.webTransportCreated"
+	EventNetworkWebTransportConnectionEstablished          = "Network.webTransportConnectionEstablished"
+	EventNetworkWebTransportClosed                         = "Network.webTransportClosed"
 	EventNetworkRequestWillBeSentExtraInfo                 = "Network.requestWillBeSentExtraInfo"
 	EventNetworkResponseReceivedExtraInfo                  = "Network.responseReceivedExtraInfo"
+	EventNetworkTrustTokenOperationDone                    = "Network.trustTokenOperationDone"
+	EventNetworkSubresourceWebBundleMetadataReceived       = "Network.subresourceWebBundleMetadataReceived"
+	EventNetworkSubresourceWebBundleMetadataError          = "Network.subresourceWebBundleMetadataError"
+	EventNetworkSubresourceWebBundleInnerResponseParsed    = "Network.subresourceWebBundleInnerResponseParsed"
+	EventNetworkSubresourceWebBundleInnerResponseError     = "Network.subresourceWebBundleInnerResponseError"
+	EventNetworkReportingAPIReportAdded                    = "Network.reportingApiReportAdded"
+	EventNetworkReportingAPIReportUpdated                  = "Network.reportingApiReportUpdated"
+	EventNetworkReportingAPIEndpointsChangedForOrigin      = "Network.reportingApiEndpointsChangedForOrigin"
 	CommandOverlayDisable                                  = overlay.CommandDisable
 	CommandOverlayEnable                                   = overlay.CommandEnable
 	CommandOverlayGetHighlightObjectForTest                = overlay.CommandGetHighlightObjectForTest
+	CommandOverlayGetGridHighlightObjectsForTest           = overlay.CommandGetGridHighlightObjectsForTest
+	CommandOverlayGetSourceOrderHighlightObjectForTest     = overlay.CommandGetSourceOrderHighlightObjectForTest
 	CommandOverlayHideHighlight                            = overlay.CommandHideHighlight
-	CommandOverlayHighlightFrame                           = overlay.CommandHighlightFrame
 	CommandOverlayHighlightNode                            = overlay.CommandHighlightNode
 	CommandOverlayHighlightQuad                            = overlay.CommandHighlightQuad
 	CommandOverlayHighlightRect                            = overlay.CommandHighlightRect
+	CommandOverlayHighlightSourceOrder                     = overlay.CommandHighlightSourceOrder
 	CommandOverlaySetInspectMode                           = overlay.CommandSetInspectMode
 	CommandOverlaySetShowAdHighlights                      = overlay.CommandSetShowAdHighlights
 	CommandOverlaySetPausedInDebuggerMessage               = overlay.CommandSetPausedInDebuggerMessage
 	CommandOverlaySetShowDebugBorders                      = overlay.CommandSetShowDebugBorders
 	CommandOverlaySetShowFPSCounter                        = overlay.CommandSetShowFPSCounter
+	CommandOverlaySetShowGridOverlays                      = overlay.CommandSetShowGridOverlays
+	CommandOverlaySetShowFlexOverlays                      = overlay.CommandSetShowFlexOverlays
+	CommandOverlaySetShowScrollSnapOverlays                = overlay.CommandSetShowScrollSnapOverlays
+	CommandOverlaySetShowContainerQueryOverlays            = overlay.CommandSetShowContainerQueryOverlays
 	CommandOverlaySetShowPaintRects                        = overlay.CommandSetShowPaintRects
 	CommandOverlaySetShowLayoutShiftRegions                = overlay.CommandSetShowLayoutShiftRegions
 	CommandOverlaySetShowScrollBottleneckRects             = overlay.CommandSetShowScrollBottleneckRects
-	CommandOverlaySetShowHitTestBorders                    = overlay.CommandSetShowHitTestBorders
+	CommandOverlaySetShowWebVitals                         = overlay.CommandSetShowWebVitals
 	CommandOverlaySetShowViewportSizeOnResize              = overlay.CommandSetShowViewportSizeOnResize
+	CommandOverlaySetShowHinge                             = overlay.CommandSetShowHinge
+	CommandOverlaySetShowIsolatedElements                  = overlay.CommandSetShowIsolatedElements
+	CommandOverlaySetShowWindowControlsOverlay             = overlay.CommandSetShowWindowControlsOverlay
 	EventOverlayInspectNodeRequested                       = "Overlay.inspectNodeRequested"
 	EventOverlayNodeHighlightRequested                     = "Overlay.nodeHighlightRequested"
 	EventOverlayScreenshotRequested                        = "Overlay.screenshotRequested"
@@ -455,6 +546,8 @@ const (
 	CommandPageEnable                                      = page.CommandEnable
 	CommandPageGetAppManifest                              = page.CommandGetAppManifest
 	CommandPageGetInstallabilityErrors                     = page.CommandGetInstallabilityErrors
+	CommandPageGetAppID                                    = page.CommandGetAppID
+	CommandPageGetAdScriptID                               = page.CommandGetAdScriptID
 	CommandPageGetFrameTree                                = page.CommandGetFrameTree
 	CommandPageGetLayoutMetrics                            = page.CommandGetLayoutMetrics
 	CommandPageGetNavigationHistory                        = page.CommandGetNavigationHistory
@@ -471,10 +564,11 @@ const (
 	CommandPageSearchInResource                            = page.CommandSearchInResource
 	CommandPageSetAdBlockingEnabled                        = page.CommandSetAdBlockingEnabled
 	CommandPageSetBypassCSP                                = page.CommandSetBypassCSP
+	CommandPageGetPermissionsPolicyState                   = page.CommandGetPermissionsPolicyState
+	CommandPageGetOriginTrials                             = page.CommandGetOriginTrials
 	CommandPageSetFontFamilies                             = page.CommandSetFontFamilies
 	CommandPageSetFontSizes                                = page.CommandSetFontSizes
 	CommandPageSetDocumentContent                          = page.CommandSetDocumentContent
-	CommandPageSetDownloadBehavior                         = page.CommandSetDownloadBehavior
 	CommandPageSetLifecycleEventsEnabled                   = page.CommandSetLifecycleEventsEnabled
 	CommandPageStartScreencast                             = page.CommandStartScreencast
 	CommandPageStopLoading                                 = page.CommandStopLoading
@@ -482,28 +576,31 @@ const (
 	CommandPageClose                                       = page.CommandClose
 	CommandPageSetWebLifecycleState                        = page.CommandSetWebLifecycleState
 	CommandPageStopScreencast                              = page.CommandStopScreencast
-	CommandPageSetProduceCompilationCache                  = page.CommandSetProduceCompilationCache
+	CommandPageProduceCompilationCache                     = page.CommandProduceCompilationCache
 	CommandPageAddCompilationCache                         = page.CommandAddCompilationCache
 	CommandPageClearCompilationCache                       = page.CommandClearCompilationCache
+	CommandPageSetSPCTransactionMode                       = page.CommandSetSPCTransactionMode
+	CommandPageSetRPHRegistrationMode                      = page.CommandSetRPHRegistrationMode
 	CommandPageGenerateTestReport                          = page.CommandGenerateTestReport
 	CommandPageWaitForDebugger                             = page.CommandWaitForDebugger
 	CommandPageSetInterceptFileChooserDialog               = page.CommandSetInterceptFileChooserDialog
-	CommandPageHandleFileChooser                           = page.CommandHandleFileChooser
+	CommandPageSetPrerenderingAllowed                      = page.CommandSetPrerenderingAllowed
 	EventPageDomContentEventFired                          = "Page.domContentEventFired"
 	EventPageFileChooserOpened                             = "Page.fileChooserOpened"
 	EventPageFrameAttached                                 = "Page.frameAttached"
 	EventPageFrameDetached                                 = "Page.frameDetached"
 	EventPageFrameNavigated                                = "Page.frameNavigated"
+	EventPageDocumentOpened                                = "Page.documentOpened"
 	EventPageFrameResized                                  = "Page.frameResized"
 	EventPageFrameRequestedNavigation                      = "Page.frameRequestedNavigation"
 	EventPageFrameStartedLoading                           = "Page.frameStartedLoading"
 	EventPageFrameStoppedLoading                           = "Page.frameStoppedLoading"
-	EventPageDownloadWillBegin                             = "Page.downloadWillBegin"
 	EventPageInterstitialHidden                            = "Page.interstitialHidden"
 	EventPageInterstitialShown                             = "Page.interstitialShown"
 	EventPageJavascriptDialogClosed                        = "Page.javascriptDialogClosed"
 	EventPageJavascriptDialogOpening                       = "Page.javascriptDialogOpening"
 	EventPageLifecycleEvent                                = "Page.lifecycleEvent"
+	EventPageBackForwardCacheNotUsed                       = "Page.backForwardCacheNotUsed"
 	EventPageLoadEventFired                                = "Page.loadEventFired"
 	EventPageNavigatedWithinDocument                       = "Page.navigatedWithinDocument"
 	EventPageScreencastFrame                               = "Page.screencastFrame"
@@ -512,23 +609,30 @@ const (
 	EventPageCompilationCacheProduced                      = "Page.compilationCacheProduced"
 	CommandPerformanceDisable                              = performance.CommandDisable
 	CommandPerformanceEnable                               = performance.CommandEnable
-	CommandPerformanceSetTimeDomain                        = performance.CommandSetTimeDomain
 	CommandPerformanceGetMetrics                           = performance.CommandGetMetrics
 	EventPerformanceMetrics                                = "Performance.metrics"
+	CommandPerformanceTimelineEnable                       = performancetimeline.CommandEnable
+	EventPerformanceTimelineTimelineEventAdded             = "PerformanceTimeline.timelineEventAdded"
+	CommandPreloadEnable                                   = preload.CommandEnable
+	CommandPreloadDisable                                  = preload.CommandDisable
+	EventPreloadRuleSetUpdated                             = "Preload.ruleSetUpdated"
+	EventPreloadRuleSetRemoved                             = "Preload.ruleSetRemoved"
+	EventPreloadPreloadEnabledStateUpdated                 = "Preload.preloadEnabledStateUpdated"
+	EventPreloadPrefetchStatusUpdated                      = "Preload.prefetchStatusUpdated"
+	EventPreloadPrerenderStatusUpdated                     = "Preload.prerenderStatusUpdated"
+	EventPreloadPreloadingAttemptSourcesUpdated            = "Preload.preloadingAttemptSourcesUpdated"
 	CommandProfilerDisable                                 = profiler.CommandDisable
 	CommandProfilerEnable                                  = profiler.CommandEnable
 	CommandProfilerGetBestEffortCoverage                   = profiler.CommandGetBestEffortCoverage
 	CommandProfilerSetSamplingInterval                     = profiler.CommandSetSamplingInterval
 	CommandProfilerStart                                   = profiler.CommandStart
 	CommandProfilerStartPreciseCoverage                    = profiler.CommandStartPreciseCoverage
-	CommandProfilerStartTypeProfile                        = profiler.CommandStartTypeProfile
 	CommandProfilerStop                                    = profiler.CommandStop
 	CommandProfilerStopPreciseCoverage                     = profiler.CommandStopPreciseCoverage
-	CommandProfilerStopTypeProfile                         = profiler.CommandStopTypeProfile
 	CommandProfilerTakePreciseCoverage                     = profiler.CommandTakePreciseCoverage
-	CommandProfilerTakeTypeProfile                         = profiler.CommandTakeTypeProfile
 	EventProfilerConsoleProfileFinished                    = "Profiler.consoleProfileFinished"
 	EventProfilerConsoleProfileStarted                     = "Profiler.consoleProfileStarted"
+	EventProfilerPreciseCoverageDeltaUpdate                = "Profiler.preciseCoverageDeltaUpdate"
 	CommandRuntimeAwaitPromise                             = runtime.CommandAwaitPromise
 	CommandRuntimeCallFunctionOn                           = runtime.CommandCallFunctionOn
 	CommandRuntimeCompileScript                            = runtime.CommandCompileScript
@@ -550,6 +654,7 @@ const (
 	CommandRuntimeTerminateExecution                       = runtime.CommandTerminateExecution
 	CommandRuntimeAddBinding                               = runtime.CommandAddBinding
 	CommandRuntimeRemoveBinding                            = runtime.CommandRemoveBinding
+	CommandRuntimeGetExceptionDetails                      = runtime.CommandGetExceptionDetails
 	EventRuntimeBindingCalled                              = "Runtime.bindingCalled"
 	EventRuntimeConsoleAPICalled                           = "Runtime.consoleAPICalled"
 	EventRuntimeExceptionRevoked                           = "Runtime.exceptionRevoked"
@@ -562,7 +667,6 @@ const (
 	CommandSecurityEnable                                  = security.CommandEnable
 	CommandSecuritySetIgnoreCertificateErrors              = security.CommandSetIgnoreCertificateErrors
 	EventSecurityVisibleSecurityStateChanged               = "Security.visibleSecurityStateChanged"
-	EventSecuritySecurityStateChanged                      = "Security.securityStateChanged"
 	CommandServiceWorkerDeliverPushMessage                 = serviceworker.CommandDeliverPushMessage
 	CommandServiceWorkerDisable                            = serviceworker.CommandDisable
 	CommandServiceWorkerDispatchSyncEvent                  = serviceworker.CommandDispatchSyncEvent
@@ -579,17 +683,49 @@ const (
 	EventServiceWorkerWorkerErrorReported                  = "ServiceWorker.workerErrorReported"
 	EventServiceWorkerWorkerRegistrationUpdated            = "ServiceWorker.workerRegistrationUpdated"
 	EventServiceWorkerWorkerVersionUpdated                 = "ServiceWorker.workerVersionUpdated"
+	CommandStorageGetStorageKeyForFrame                    = storage.CommandGetStorageKeyForFrame
 	CommandStorageClearDataForOrigin                       = storage.CommandClearDataForOrigin
+	CommandStorageClearDataForStorageKey                   = storage.CommandClearDataForStorageKey
+	CommandStorageGetCookies                               = storage.CommandGetCookies
+	CommandStorageSetCookies                               = storage.CommandSetCookies
+	CommandStorageClearCookies                             = storage.CommandClearCookies
 	CommandStorageGetUsageAndQuota                         = storage.CommandGetUsageAndQuota
+	CommandStorageOverrideQuotaForOrigin                   = storage.CommandOverrideQuotaForOrigin
 	CommandStorageTrackCacheStorageForOrigin               = storage.CommandTrackCacheStorageForOrigin
+	CommandStorageTrackCacheStorageForStorageKey           = storage.CommandTrackCacheStorageForStorageKey
 	CommandStorageTrackIndexedDBForOrigin                  = storage.CommandTrackIndexedDBForOrigin
+	CommandStorageTrackIndexedDBForStorageKey              = storage.CommandTrackIndexedDBForStorageKey
 	CommandStorageUntrackCacheStorageForOrigin             = storage.CommandUntrackCacheStorageForOrigin
+	CommandStorageUntrackCacheStorageForStorageKey         = storage.CommandUntrackCacheStorageForStorageKey
 	CommandStorageUntrackIndexedDBForOrigin                = storage.CommandUntrackIndexedDBForOrigin
+	CommandStorageUntrackIndexedDBForStorageKey            = storage.CommandUntrackIndexedDBForStorageKey
+	CommandStorageGetTrustTokens                           = storage.CommandGetTrustTokens
+	CommandStorageClearTrustTokens                         = storage.CommandClearTrustTokens
+	CommandStorageGetInterestGroupDetails                  = storage.CommandGetInterestGroupDetails
+	CommandStorageSetInterestGroupTracking                 = storage.CommandSetInterestGroupTracking
+	CommandStorageGetSharedStorageMetadata                 = storage.CommandGetSharedStorageMetadata
+	CommandStorageGetSharedStorageEntries                  = storage.CommandGetSharedStorageEntries
+	CommandStorageSetSharedStorageEntry                    = storage.CommandSetSharedStorageEntry
+	CommandStorageDeleteSharedStorageEntry                 = storage.CommandDeleteSharedStorageEntry
+	CommandStorageClearSharedStorageEntries                = storage.CommandClearSharedStorageEntries
+	CommandStorageResetSharedStorageBudget                 = storage.CommandResetSharedStorageBudget
+	CommandStorageSetSharedStorageTracking                 = storage.CommandSetSharedStorageTracking
+	CommandStorageSetStorageBucketTracking                 = storage.CommandSetStorageBucketTracking
+	CommandStorageDeleteStorageBucket                      = storage.CommandDeleteStorageBucket
+	CommandStorageRunBounceTrackingMitigations             = storage.CommandRunBounceTrackingMitigations
+	CommandStorageSetAttributionReportingLocalTestingMode  = storage.CommandSetAttributionReportingLocalTestingMode
+	CommandStorageSetAttributionReportingTracking          = storage.CommandSetAttributionReportingTracking
 	EventStorageCacheStorageContentUpdated                 = "Storage.cacheStorageContentUpdated"
 	EventStorageCacheStorageListUpdated                    = "Storage.cacheStorageListUpdated"
 	EventStorageIndexedDBContentUpdated                    = "Storage.indexedDBContentUpdated"
 	EventStorageIndexedDBListUpdated                       = "Storage.indexedDBListUpdated"
+	EventStorageInterestGroupAccessed                      = "Storage.interestGroupAccessed"
+	EventStorageSharedStorageAccessed                      = "Storage.sharedStorageAccessed"
+	EventStorageStorageBucketCreatedOrUpdated              = "Storage.storageBucketCreatedOrUpdated"
+	EventStorageStorageBucketDeleted                       = "Storage.storageBucketDeleted"
+	EventStorageAttributionReportingSourceRegistered       = "Storage.attributionReportingSourceRegistered"
 	CommandSystemInfoGetInfo                               = systeminfo.CommandGetInfo
+	CommandSystemInfoGetFeatureState                       = systeminfo.CommandGetFeatureState
 	CommandSystemInfoGetProcessInfo                        = systeminfo.CommandGetProcessInfo
 	CommandTargetActivateTarget                            = target.CommandActivateTarget
 	CommandTargetAttachToTarget                            = target.CommandAttachToTarget
@@ -604,6 +740,7 @@ const (
 	CommandTargetGetTargetInfo                             = target.CommandGetTargetInfo
 	CommandTargetGetTargets                                = target.CommandGetTargets
 	CommandTargetSetAutoAttach                             = target.CommandSetAutoAttach
+	CommandTargetAutoAttachRelated                         = target.CommandAutoAttachRelated
 	CommandTargetSetDiscoverTargets                        = target.CommandSetDiscoverTargets
 	CommandTargetSetRemoteLocations                        = target.CommandSetRemoteLocations
 	EventTargetAttachedToTarget                            = "Target.attachedToTarget"
@@ -643,6 +780,7 @@ const (
 	CommandWebAuthnEnable                                  = webauthn.CommandEnable
 	CommandWebAuthnDisable                                 = webauthn.CommandDisable
 	CommandWebAuthnAddVirtualAuthenticator                 = webauthn.CommandAddVirtualAuthenticator
+	CommandWebAuthnSetResponseOverrideBits                 = webauthn.CommandSetResponseOverrideBits
 	CommandWebAuthnRemoveVirtualAuthenticator              = webauthn.CommandRemoveVirtualAuthenticator
 	CommandWebAuthnAddCredential                           = webauthn.CommandAddCredential
 	CommandWebAuthnGetCredential                           = webauthn.CommandGetCredential
@@ -650,6 +788,9 @@ const (
 	CommandWebAuthnRemoveCredential                        = webauthn.CommandRemoveCredential
 	CommandWebAuthnClearCredentials                        = webauthn.CommandClearCredentials
 	CommandWebAuthnSetUserVerified                         = webauthn.CommandSetUserVerified
+	CommandWebAuthnSetAutomaticPresenceSimulation          = webauthn.CommandSetAutomaticPresenceSimulation
+	EventWebAuthnCredentialAdded                           = "WebAuthn.credentialAdded"
+	EventWebAuthnCredentialAsserted                        = "WebAuthn.credentialAsserted"
 )
 
 // Error error type.
@@ -694,6 +835,24 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandAccessibilityGetFullAXTree:
 		v = new(accessibility.GetFullAXTreeReturns)
 
+	case CommandAccessibilityGetRootAXNode:
+		v = new(accessibility.GetRootAXNodeReturns)
+
+	case CommandAccessibilityGetAXNodeAndAncestors:
+		v = new(accessibility.GetAXNodeAndAncestorsReturns)
+
+	case CommandAccessibilityGetChildAXNodes:
+		v = new(accessibility.GetChildAXNodesReturns)
+
+	case CommandAccessibilityQueryAXTree:
+		v = new(accessibility.QueryAXTreeReturns)
+
+	case EventAccessibilityLoadComplete:
+		v = new(accessibility.EventLoadComplete)
+
+	case EventAccessibilityNodesUpdated:
+		v = new(accessibility.EventNodesUpdated)
+
 	case CommandAnimationDisable:
 		return emptyVal, nil
 
@@ -733,26 +892,38 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventAnimationAnimationStarted:
 		v = new(animation.EventAnimationStarted)
 
-	case CommandApplicationCacheEnable:
-		return emptyVal, nil
-
-	case CommandApplicationCacheGetApplicationCacheForFrame:
-		v = new(applicationcache.GetApplicationCacheForFrameReturns)
-
-	case CommandApplicationCacheGetFramesWithManifests:
-		v = new(applicationcache.GetFramesWithManifestsReturns)
-
-	case CommandApplicationCacheGetManifestForFrame:
-		v = new(applicationcache.GetManifestForFrameReturns)
-
-	case EventApplicationCacheApplicationCacheStatusUpdated:
-		v = new(applicationcache.EventApplicationCacheStatusUpdated)
-
-	case EventApplicationCacheNetworkStateUpdated:
-		v = new(applicationcache.EventNetworkStateUpdated)
-
 	case CommandAuditsGetEncodedResponse:
 		v = new(audits.GetEncodedResponseReturns)
+
+	case CommandAuditsDisable:
+		return emptyVal, nil
+
+	case CommandAuditsEnable:
+		return emptyVal, nil
+
+	case CommandAuditsCheckContrast:
+		return emptyVal, nil
+
+	case CommandAuditsCheckFormsIssues:
+		v = new(audits.CheckFormsIssuesReturns)
+
+	case EventAuditsIssueAdded:
+		v = new(audits.EventIssueAdded)
+
+	case CommandAutofillTrigger:
+		return emptyVal, nil
+
+	case CommandAutofillSetAddresses:
+		return emptyVal, nil
+
+	case CommandAutofillDisable:
+		return emptyVal, nil
+
+	case CommandAutofillEnable:
+		return emptyVal, nil
+
+	case EventAutofillAddressFormFilled:
+		v = new(autofill.EventAddressFormFilled)
 
 	case CommandBackgroundServiceStartObserving:
 		return emptyVal, nil
@@ -779,6 +950,12 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandBrowserResetPermissions:
+		return emptyVal, nil
+
+	case CommandBrowserSetDownloadBehavior:
+		return emptyVal, nil
+
+	case CommandBrowserCancelDownload:
 		return emptyVal, nil
 
 	case CommandBrowserClose:
@@ -813,6 +990,18 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandBrowserSetDockTile:
 		return emptyVal, nil
+
+	case CommandBrowserExecuteBrowserCommand:
+		return emptyVal, nil
+
+	case CommandBrowserAddPrivacySandboxEnrollmentOverride:
+		return emptyVal, nil
+
+	case EventBrowserDownloadWillBegin:
+		v = new(browser.EventDownloadWillBegin)
+
+	case EventBrowserDownloadProgress:
+		v = new(browser.EventDownloadProgress)
 
 	case CommandCSSAddRule:
 		v = new(css.AddRuleReturns)
@@ -853,14 +1042,35 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandCSSGetStyleSheetText:
 		v = new(css.GetStyleSheetTextReturns)
 
+	case CommandCSSGetLayersForNode:
+		v = new(css.GetLayersForNodeReturns)
+
+	case CommandCSSTrackComputedStyleUpdates:
+		return emptyVal, nil
+
+	case CommandCSSTakeComputedStyleUpdates:
+		v = new(css.TakeComputedStyleUpdatesReturns)
+
 	case CommandCSSSetEffectivePropertyValueForNode:
 		return emptyVal, nil
+
+	case CommandCSSSetPropertyRulePropertyName:
+		v = new(css.SetPropertyRulePropertyNameReturns)
 
 	case CommandCSSSetKeyframeKey:
 		v = new(css.SetKeyframeKeyReturns)
 
 	case CommandCSSSetMediaText:
 		v = new(css.SetMediaTextReturns)
+
+	case CommandCSSSetContainerQueryText:
+		v = new(css.SetContainerQueryTextReturns)
+
+	case CommandCSSSetSupportsText:
+		v = new(css.SetSupportsTextReturns)
+
+	case CommandCSSSetScopeText:
+		v = new(css.SetScopeTextReturns)
 
 	case CommandCSSSetRuleSelector:
 		v = new(css.SetRuleSelectorReturns)
@@ -879,6 +1089,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandCSSTakeCoverageDelta:
 		v = new(css.TakeCoverageDeltaReturns)
+
+	case CommandCSSSetLocalFontsEnabled:
+		return emptyVal, nil
 
 	case EventCSSFontsUpdated:
 		v = new(css.EventFontsUpdated)
@@ -919,6 +1132,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandCastSetSinkToUse:
 		return emptyVal, nil
 
+	case CommandCastStartDesktopMirroring:
+		return emptyVal, nil
+
 	case CommandCastStartTabMirroring:
 		return emptyVal, nil
 
@@ -939,6 +1155,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandDOMDescribeNode:
 		v = new(dom.DescribeNodeReturns)
+
+	case CommandDOMScrollIntoViewIfNeeded:
+		return emptyVal, nil
 
 	case CommandDOMDisable:
 		return emptyVal, nil
@@ -964,8 +1183,8 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandDOMGetDocument:
 		v = new(dom.GetDocumentReturns)
 
-	case CommandDOMGetFlattenedDocument:
-		v = new(dom.GetFlattenedDocumentReturns)
+	case CommandDOMGetNodesForSubtreeByStyle:
+		v = new(dom.GetNodesForSubtreeByStyleReturns)
 
 	case CommandDOMGetNodeForLocation:
 		v = new(dom.GetNodeForLocationReturns)
@@ -991,14 +1210,17 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandDOMPushNodeByPathToFrontend:
 		v = new(dom.PushNodeByPathToFrontendReturns)
 
-	case CommandDOMPushNodesByBackendIdsToFrontend:
-		v = new(dom.PushNodesByBackendIdsToFrontendReturns)
+	case CommandDOMPushNodesByBackendIDsToFrontend:
+		v = new(dom.PushNodesByBackendIDsToFrontendReturns)
 
 	case CommandDOMQuerySelector:
 		v = new(dom.QuerySelectorReturns)
 
 	case CommandDOMQuerySelectorAll:
 		v = new(dom.QuerySelectorAllReturns)
+
+	case CommandDOMGetTopLayerElements:
+		v = new(dom.GetTopLayerElementsReturns)
 
 	case CommandDOMRedo:
 		return emptyVal, nil
@@ -1054,6 +1276,12 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandDOMGetFrameOwner:
 		v = new(dom.GetFrameOwnerReturns)
 
+	case CommandDOMGetContainerForNode:
+		v = new(dom.GetContainerForNodeReturns)
+
+	case CommandDOMGetQueryingDescendantsForContainer:
+		v = new(dom.GetQueryingDescendantsForContainerReturns)
+
 	case EventDOMAttributeModified:
 		v = new(dom.EventAttributeModified)
 
@@ -1084,6 +1312,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventDOMPseudoElementAdded:
 		v = new(dom.EventPseudoElementAdded)
 
+	case EventDOMTopLayerElementsUpdated:
+		v = new(dom.EventTopLayerElementsUpdated)
+
 	case EventDOMPseudoElementRemoved:
 		v = new(dom.EventPseudoElementRemoved)
 
@@ -1105,19 +1336,16 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandDOMDebuggerRemoveEventListenerBreakpoint:
 		return emptyVal, nil
 
-	case CommandDOMDebuggerRemoveInstrumentationBreakpoint:
+	case CommandDOMDebuggerRemoveXHRBreakpoint:
 		return emptyVal, nil
 
-	case CommandDOMDebuggerRemoveXHRBreakpoint:
+	case CommandDOMDebuggerSetBreakOnCSPViolation:
 		return emptyVal, nil
 
 	case CommandDOMDebuggerSetDOMBreakpoint:
 		return emptyVal, nil
 
 	case CommandDOMDebuggerSetEventListenerBreakpoint:
-		return emptyVal, nil
-
-	case CommandDOMDebuggerSetInstrumentationBreakpoint:
 		return emptyVal, nil
 
 	case CommandDOMDebuggerSetXHRBreakpoint:
@@ -1195,8 +1423,11 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandDebuggerGetScriptSource:
 		v = new(debugger.GetScriptSourceReturns)
 
-	case CommandDebuggerGetWasmBytecode:
-		v = new(debugger.GetWasmBytecodeReturns)
+	case CommandDebuggerDisassembleWasmModule:
+		v = new(debugger.DisassembleWasmModuleReturns)
+
+	case CommandDebuggerNextWasmDisassemblyChunk:
+		v = new(debugger.NextWasmDisassemblyChunkReturns)
 
 	case CommandDebuggerGetStackTrace:
 		v = new(debugger.GetStackTraceReturns)
@@ -1208,7 +1439,7 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandDebuggerRestartFrame:
-		v = new(debugger.RestartFrameReturns)
+		return emptyVal, nil
 
 	case CommandDebuggerResume:
 		return emptyVal, nil
@@ -1279,6 +1510,21 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventDebuggerScriptParsed:
 		v = new(debugger.EventScriptParsed)
 
+	case CommandDeviceAccessEnable:
+		return emptyVal, nil
+
+	case CommandDeviceAccessDisable:
+		return emptyVal, nil
+
+	case CommandDeviceAccessSelectPrompt:
+		return emptyVal, nil
+
+	case CommandDeviceAccessCancelPrompt:
+		return emptyVal, nil
+
+	case EventDeviceAccessDeviceRequestPrompted:
+		v = new(deviceaccess.EventDeviceRequestPrompted)
+
 	case CommandDeviceOrientationClearDeviceOrientationOverride:
 		return emptyVal, nil
 
@@ -1298,6 +1544,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandEmulationSetFocusEmulationEnabled:
+		return emptyVal, nil
+
+	case CommandEmulationSetAutoDarkModeOverride:
 		return emptyVal, nil
 
 	case CommandEmulationSetCPUThrottlingRate:
@@ -1321,7 +1570,25 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandEmulationSetEmulatedMedia:
 		return emptyVal, nil
 
+	case CommandEmulationSetEmulatedVisionDeficiency:
+		return emptyVal, nil
+
 	case CommandEmulationSetGeolocationOverride:
+		return emptyVal, nil
+
+	case CommandEmulationGetOverriddenSensorInformation:
+		v = new(emulation.GetOverriddenSensorInformationReturns)
+
+	case CommandEmulationSetSensorOverrideEnabled:
+		return emptyVal, nil
+
+	case CommandEmulationSetSensorOverrideReadings:
+		return emptyVal, nil
+
+	case CommandEmulationSetIdleOverride:
+		return emptyVal, nil
+
+	case CommandEmulationClearIdleOverride:
 		return emptyVal, nil
 
 	case CommandEmulationSetPageScaleFactor:
@@ -1336,14 +1603,56 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandEmulationSetVirtualTimePolicy:
 		v = new(emulation.SetVirtualTimePolicyReturns)
 
+	case CommandEmulationSetLocaleOverride:
+		return emptyVal, nil
+
 	case CommandEmulationSetTimezoneOverride:
+		return emptyVal, nil
+
+	case CommandEmulationSetDisabledImageTypes:
+		return emptyVal, nil
+
+	case CommandEmulationSetHardwareConcurrencyOverride:
 		return emptyVal, nil
 
 	case CommandEmulationSetUserAgentOverride:
 		return emptyVal, nil
 
+	case CommandEmulationSetAutomationOverride:
+		return emptyVal, nil
+
 	case EventEmulationVirtualTimeBudgetExpired:
 		v = new(emulation.EventVirtualTimeBudgetExpired)
+
+	case CommandEventBreakpointsSetInstrumentationBreakpoint:
+		return emptyVal, nil
+
+	case CommandEventBreakpointsRemoveInstrumentationBreakpoint:
+		return emptyVal, nil
+
+	case CommandEventBreakpointsDisable:
+		return emptyVal, nil
+
+	case CommandFedCmEnable:
+		return emptyVal, nil
+
+	case CommandFedCmDisable:
+		return emptyVal, nil
+
+	case CommandFedCmSelectAccount:
+		return emptyVal, nil
+
+	case CommandFedCmConfirmIdpLogin:
+		return emptyVal, nil
+
+	case CommandFedCmDismissDialog:
+		return emptyVal, nil
+
+	case CommandFedCmResetCooldown:
+		return emptyVal, nil
+
+	case EventFedCmDialogShown:
+		v = new(fedcm.EventDialogShown)
 
 	case CommandFetchDisable:
 		return emptyVal, nil
@@ -1363,6 +1672,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandFetchContinueWithAuth:
 		return emptyVal, nil
 
+	case CommandFetchContinueResponse:
+		return emptyVal, nil
+
 	case CommandFetchGetResponseBody:
 		v = new(fetch.GetResponseBodyReturns)
 
@@ -1377,12 +1689,6 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandHeadlessExperimentalBeginFrame:
 		v = new(headlessexperimental.BeginFrameReturns)
-
-	case CommandHeadlessExperimentalDisable:
-		return emptyVal, nil
-
-	case CommandHeadlessExperimentalEnable:
-		return emptyVal, nil
 
 	case CommandHeapProfilerAddInspectedHeapObject:
 		return emptyVal, nil
@@ -1471,10 +1777,16 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandIndexedDBRequestDatabaseNames:
 		v = new(indexeddb.RequestDatabaseNamesReturns)
 
+	case CommandInputDispatchDragEvent:
+		return emptyVal, nil
+
 	case CommandInputDispatchKeyEvent:
 		return emptyVal, nil
 
 	case CommandInputInsertText:
+		return emptyVal, nil
+
+	case CommandInputImeSetComposition:
 		return emptyVal, nil
 
 	case CommandInputDispatchMouseEvent:
@@ -1483,10 +1795,16 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandInputDispatchTouchEvent:
 		return emptyVal, nil
 
+	case CommandInputCancelDragging:
+		return emptyVal, nil
+
 	case CommandInputEmulateTouchFromMouseEvent:
 		return emptyVal, nil
 
 	case CommandInputSetIgnoreInputEvents:
+		return emptyVal, nil
+
+	case CommandInputSetInterceptDrags:
 		return emptyVal, nil
 
 	case CommandInputSynthesizePinchGesture:
@@ -1497,6 +1815,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandInputSynthesizeTapGesture:
 		return emptyVal, nil
+
+	case EventInputDragIntercepted:
+		v = new(input.EventDragIntercepted)
 
 	case CommandInspectorDisable:
 		return emptyVal, nil
@@ -1576,6 +1897,12 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventMediaPlayerEventsAdded:
 		v = new(media.EventPlayerEventsAdded)
 
+	case EventMediaPlayerMessagesLogged:
+		v = new(media.EventPlayerMessagesLogged)
+
+	case EventMediaPlayerErrorsRaised:
+		v = new(media.EventPlayerErrorsRaised)
+
 	case EventMediaPlayersCreated:
 		v = new(media.EventPlayersCreated)
 
@@ -1609,6 +1936,12 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandMemoryGetSamplingProfile:
 		v = new(memory.GetSamplingProfileReturns)
 
+	case CommandNetworkSetAcceptedEncodings:
+		return emptyVal, nil
+
+	case CommandNetworkClearAcceptedEncodingsOverride:
+		return emptyVal, nil
+
 	case CommandNetworkClearBrowserCache:
 		return emptyVal, nil
 
@@ -1626,9 +1959,6 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandNetworkEnable:
 		return emptyVal, nil
-
-	case CommandNetworkGetAllCookies:
-		v = new(network.GetAllCookiesReturns)
 
 	case CommandNetworkGetCertificate:
 		v = new(network.GetCertificateReturns)
@@ -1664,16 +1994,25 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandNetworkSetCookie:
-		v = new(network.SetCookieReturns)
+		return emptyVal, nil
 
 	case CommandNetworkSetCookies:
 		return emptyVal, nil
 
-	case CommandNetworkSetDataSizeLimitsForTest:
-		return emptyVal, nil
-
 	case CommandNetworkSetExtraHTTPHeaders:
 		return emptyVal, nil
+
+	case CommandNetworkSetAttachDebugStack:
+		return emptyVal, nil
+
+	case CommandNetworkGetSecurityIsolationStatus:
+		v = new(network.GetSecurityIsolationStatusReturns)
+
+	case CommandNetworkEnableReportingAPI:
+		return emptyVal, nil
+
+	case CommandNetworkLoadNetworkResource:
+		v = new(network.LoadNetworkResourceReturns)
 
 	case EventNetworkDataReceived:
 		v = new(network.EventDataReceived)
@@ -1723,11 +2062,44 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventNetworkWebSocketWillSendHandshakeRequest:
 		v = new(network.EventWebSocketWillSendHandshakeRequest)
 
+	case EventNetworkWebTransportCreated:
+		v = new(network.EventWebTransportCreated)
+
+	case EventNetworkWebTransportConnectionEstablished:
+		v = new(network.EventWebTransportConnectionEstablished)
+
+	case EventNetworkWebTransportClosed:
+		v = new(network.EventWebTransportClosed)
+
 	case EventNetworkRequestWillBeSentExtraInfo:
 		v = new(network.EventRequestWillBeSentExtraInfo)
 
 	case EventNetworkResponseReceivedExtraInfo:
 		v = new(network.EventResponseReceivedExtraInfo)
+
+	case EventNetworkTrustTokenOperationDone:
+		v = new(network.EventTrustTokenOperationDone)
+
+	case EventNetworkSubresourceWebBundleMetadataReceived:
+		v = new(network.EventSubresourceWebBundleMetadataReceived)
+
+	case EventNetworkSubresourceWebBundleMetadataError:
+		v = new(network.EventSubresourceWebBundleMetadataError)
+
+	case EventNetworkSubresourceWebBundleInnerResponseParsed:
+		v = new(network.EventSubresourceWebBundleInnerResponseParsed)
+
+	case EventNetworkSubresourceWebBundleInnerResponseError:
+		v = new(network.EventSubresourceWebBundleInnerResponseError)
+
+	case EventNetworkReportingAPIReportAdded:
+		v = new(network.EventReportingAPIReportAdded)
+
+	case EventNetworkReportingAPIReportUpdated:
+		v = new(network.EventReportingAPIReportUpdated)
+
+	case EventNetworkReportingAPIEndpointsChangedForOrigin:
+		v = new(network.EventReportingAPIEndpointsChangedForOrigin)
 
 	case CommandOverlayDisable:
 		return emptyVal, nil
@@ -1738,10 +2110,13 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandOverlayGetHighlightObjectForTest:
 		v = new(overlay.GetHighlightObjectForTestReturns)
 
-	case CommandOverlayHideHighlight:
-		return emptyVal, nil
+	case CommandOverlayGetGridHighlightObjectsForTest:
+		v = new(overlay.GetGridHighlightObjectsForTestReturns)
 
-	case CommandOverlayHighlightFrame:
+	case CommandOverlayGetSourceOrderHighlightObjectForTest:
+		v = new(overlay.GetSourceOrderHighlightObjectForTestReturns)
+
+	case CommandOverlayHideHighlight:
 		return emptyVal, nil
 
 	case CommandOverlayHighlightNode:
@@ -1751,6 +2126,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandOverlayHighlightRect:
+		return emptyVal, nil
+
+	case CommandOverlayHighlightSourceOrder:
 		return emptyVal, nil
 
 	case CommandOverlaySetInspectMode:
@@ -1768,6 +2146,18 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandOverlaySetShowFPSCounter:
 		return emptyVal, nil
 
+	case CommandOverlaySetShowGridOverlays:
+		return emptyVal, nil
+
+	case CommandOverlaySetShowFlexOverlays:
+		return emptyVal, nil
+
+	case CommandOverlaySetShowScrollSnapOverlays:
+		return emptyVal, nil
+
+	case CommandOverlaySetShowContainerQueryOverlays:
+		return emptyVal, nil
+
 	case CommandOverlaySetShowPaintRects:
 		return emptyVal, nil
 
@@ -1777,10 +2167,19 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandOverlaySetShowScrollBottleneckRects:
 		return emptyVal, nil
 
-	case CommandOverlaySetShowHitTestBorders:
+	case CommandOverlaySetShowWebVitals:
 		return emptyVal, nil
 
 	case CommandOverlaySetShowViewportSizeOnResize:
+		return emptyVal, nil
+
+	case CommandOverlaySetShowHinge:
+		return emptyVal, nil
+
+	case CommandOverlaySetShowIsolatedElements:
+		return emptyVal, nil
+
+	case CommandOverlaySetShowWindowControlsOverlay:
 		return emptyVal, nil
 
 	case EventOverlayInspectNodeRequested:
@@ -1821,6 +2220,12 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandPageGetInstallabilityErrors:
 		v = new(page.GetInstallabilityErrorsReturns)
+
+	case CommandPageGetAppID:
+		v = new(page.GetAppIDReturns)
+
+	case CommandPageGetAdScriptID:
+		v = new(page.GetAdScriptIDReturns)
 
 	case CommandPageGetFrameTree:
 		v = new(page.GetFrameTreeReturns)
@@ -1870,6 +2275,12 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandPageSetBypassCSP:
 		return emptyVal, nil
 
+	case CommandPageGetPermissionsPolicyState:
+		v = new(page.GetPermissionsPolicyStateReturns)
+
+	case CommandPageGetOriginTrials:
+		v = new(page.GetOriginTrialsReturns)
+
 	case CommandPageSetFontFamilies:
 		return emptyVal, nil
 
@@ -1877,9 +2288,6 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandPageSetDocumentContent:
-		return emptyVal, nil
-
-	case CommandPageSetDownloadBehavior:
 		return emptyVal, nil
 
 	case CommandPageSetLifecycleEventsEnabled:
@@ -1903,13 +2311,19 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandPageStopScreencast:
 		return emptyVal, nil
 
-	case CommandPageSetProduceCompilationCache:
+	case CommandPageProduceCompilationCache:
 		return emptyVal, nil
 
 	case CommandPageAddCompilationCache:
 		return emptyVal, nil
 
 	case CommandPageClearCompilationCache:
+		return emptyVal, nil
+
+	case CommandPageSetSPCTransactionMode:
+		return emptyVal, nil
+
+	case CommandPageSetRPHRegistrationMode:
 		return emptyVal, nil
 
 	case CommandPageGenerateTestReport:
@@ -1921,7 +2335,7 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandPageSetInterceptFileChooserDialog:
 		return emptyVal, nil
 
-	case CommandPageHandleFileChooser:
+	case CommandPageSetPrerenderingAllowed:
 		return emptyVal, nil
 
 	case EventPageDomContentEventFired:
@@ -1939,6 +2353,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventPageFrameNavigated:
 		v = new(page.EventFrameNavigated)
 
+	case EventPageDocumentOpened:
+		v = new(page.EventDocumentOpened)
+
 	case EventPageFrameResized:
 		v = new(page.EventFrameResized)
 
@@ -1950,9 +2367,6 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case EventPageFrameStoppedLoading:
 		v = new(page.EventFrameStoppedLoading)
-
-	case EventPageDownloadWillBegin:
-		v = new(page.EventDownloadWillBegin)
 
 	case EventPageInterstitialHidden:
 		v = new(page.EventInterstitialHidden)
@@ -1968,6 +2382,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case EventPageLifecycleEvent:
 		v = new(page.EventLifecycleEvent)
+
+	case EventPageBackForwardCacheNotUsed:
+		v = new(page.EventBackForwardCacheNotUsed)
 
 	case EventPageLoadEventFired:
 		v = new(page.EventLoadEventFired)
@@ -1993,14 +2410,41 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandPerformanceEnable:
 		return emptyVal, nil
 
-	case CommandPerformanceSetTimeDomain:
-		return emptyVal, nil
-
 	case CommandPerformanceGetMetrics:
 		v = new(performance.GetMetricsReturns)
 
 	case EventPerformanceMetrics:
 		v = new(performance.EventMetrics)
+
+	case CommandPerformanceTimelineEnable:
+		return emptyVal, nil
+
+	case EventPerformanceTimelineTimelineEventAdded:
+		v = new(performancetimeline.EventTimelineEventAdded)
+
+	case CommandPreloadEnable:
+		return emptyVal, nil
+
+	case CommandPreloadDisable:
+		return emptyVal, nil
+
+	case EventPreloadRuleSetUpdated:
+		v = new(preload.EventRuleSetUpdated)
+
+	case EventPreloadRuleSetRemoved:
+		v = new(preload.EventRuleSetRemoved)
+
+	case EventPreloadPreloadEnabledStateUpdated:
+		v = new(preload.EventPreloadEnabledStateUpdated)
+
+	case EventPreloadPrefetchStatusUpdated:
+		v = new(preload.EventPrefetchStatusUpdated)
+
+	case EventPreloadPrerenderStatusUpdated:
+		v = new(preload.EventPrerenderStatusUpdated)
+
+	case EventPreloadPreloadingAttemptSourcesUpdated:
+		v = new(preload.EventPreloadingAttemptSourcesUpdated)
 
 	case CommandProfilerDisable:
 		return emptyVal, nil
@@ -2018,10 +2462,7 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		return emptyVal, nil
 
 	case CommandProfilerStartPreciseCoverage:
-		return emptyVal, nil
-
-	case CommandProfilerStartTypeProfile:
-		return emptyVal, nil
+		v = new(profiler.StartPreciseCoverageReturns)
 
 	case CommandProfilerStop:
 		v = new(profiler.StopReturns)
@@ -2029,20 +2470,17 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandProfilerStopPreciseCoverage:
 		return emptyVal, nil
 
-	case CommandProfilerStopTypeProfile:
-		return emptyVal, nil
-
 	case CommandProfilerTakePreciseCoverage:
 		v = new(profiler.TakePreciseCoverageReturns)
-
-	case CommandProfilerTakeTypeProfile:
-		v = new(profiler.TakeTypeProfileReturns)
 
 	case EventProfilerConsoleProfileFinished:
 		v = new(profiler.EventConsoleProfileFinished)
 
 	case EventProfilerConsoleProfileStarted:
 		v = new(profiler.EventConsoleProfileStarted)
+
+	case EventProfilerPreciseCoverageDeltaUpdate:
+		v = new(profiler.EventPreciseCoverageDeltaUpdate)
 
 	case CommandRuntimeAwaitPromise:
 		v = new(runtime.AwaitPromiseReturns)
@@ -2107,6 +2545,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandRuntimeRemoveBinding:
 		return emptyVal, nil
 
+	case CommandRuntimeGetExceptionDetails:
+		v = new(runtime.GetExceptionDetailsReturns)
+
 	case EventRuntimeBindingCalled:
 		v = new(runtime.EventBindingCalled)
 
@@ -2142,9 +2583,6 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case EventSecurityVisibleSecurityStateChanged:
 		v = new(security.EventVisibleSecurityStateChanged)
-
-	case EventSecuritySecurityStateChanged:
-		v = new(security.EventSecurityStateChanged)
 
 	case CommandServiceWorkerDeliverPushMessage:
 		return emptyVal, nil
@@ -2194,22 +2632,100 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventServiceWorkerWorkerVersionUpdated:
 		v = new(serviceworker.EventWorkerVersionUpdated)
 
+	case CommandStorageGetStorageKeyForFrame:
+		v = new(storage.GetStorageKeyForFrameReturns)
+
 	case CommandStorageClearDataForOrigin:
+		return emptyVal, nil
+
+	case CommandStorageClearDataForStorageKey:
+		return emptyVal, nil
+
+	case CommandStorageGetCookies:
+		v = new(storage.GetCookiesReturns)
+
+	case CommandStorageSetCookies:
+		return emptyVal, nil
+
+	case CommandStorageClearCookies:
 		return emptyVal, nil
 
 	case CommandStorageGetUsageAndQuota:
 		v = new(storage.GetUsageAndQuotaReturns)
 
+	case CommandStorageOverrideQuotaForOrigin:
+		return emptyVal, nil
+
 	case CommandStorageTrackCacheStorageForOrigin:
+		return emptyVal, nil
+
+	case CommandStorageTrackCacheStorageForStorageKey:
 		return emptyVal, nil
 
 	case CommandStorageTrackIndexedDBForOrigin:
 		return emptyVal, nil
 
+	case CommandStorageTrackIndexedDBForStorageKey:
+		return emptyVal, nil
+
 	case CommandStorageUntrackCacheStorageForOrigin:
 		return emptyVal, nil
 
+	case CommandStorageUntrackCacheStorageForStorageKey:
+		return emptyVal, nil
+
 	case CommandStorageUntrackIndexedDBForOrigin:
+		return emptyVal, nil
+
+	case CommandStorageUntrackIndexedDBForStorageKey:
+		return emptyVal, nil
+
+	case CommandStorageGetTrustTokens:
+		v = new(storage.GetTrustTokensReturns)
+
+	case CommandStorageClearTrustTokens:
+		v = new(storage.ClearTrustTokensReturns)
+
+	case CommandStorageGetInterestGroupDetails:
+		v = new(storage.GetInterestGroupDetailsReturns)
+
+	case CommandStorageSetInterestGroupTracking:
+		return emptyVal, nil
+
+	case CommandStorageGetSharedStorageMetadata:
+		v = new(storage.GetSharedStorageMetadataReturns)
+
+	case CommandStorageGetSharedStorageEntries:
+		v = new(storage.GetSharedStorageEntriesReturns)
+
+	case CommandStorageSetSharedStorageEntry:
+		return emptyVal, nil
+
+	case CommandStorageDeleteSharedStorageEntry:
+		return emptyVal, nil
+
+	case CommandStorageClearSharedStorageEntries:
+		return emptyVal, nil
+
+	case CommandStorageResetSharedStorageBudget:
+		return emptyVal, nil
+
+	case CommandStorageSetSharedStorageTracking:
+		return emptyVal, nil
+
+	case CommandStorageSetStorageBucketTracking:
+		return emptyVal, nil
+
+	case CommandStorageDeleteStorageBucket:
+		return emptyVal, nil
+
+	case CommandStorageRunBounceTrackingMitigations:
+		v = new(storage.RunBounceTrackingMitigationsReturns)
+
+	case CommandStorageSetAttributionReportingLocalTestingMode:
+		return emptyVal, nil
+
+	case CommandStorageSetAttributionReportingTracking:
 		return emptyVal, nil
 
 	case EventStorageCacheStorageContentUpdated:
@@ -2224,8 +2740,26 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case EventStorageIndexedDBListUpdated:
 		v = new(storage.EventIndexedDBListUpdated)
 
+	case EventStorageInterestGroupAccessed:
+		v = new(storage.EventInterestGroupAccessed)
+
+	case EventStorageSharedStorageAccessed:
+		v = new(storage.EventSharedStorageAccessed)
+
+	case EventStorageStorageBucketCreatedOrUpdated:
+		v = new(storage.EventStorageBucketCreatedOrUpdated)
+
+	case EventStorageStorageBucketDeleted:
+		v = new(storage.EventStorageBucketDeleted)
+
+	case EventStorageAttributionReportingSourceRegistered:
+		v = new(storage.EventAttributionReportingSourceRegistered)
+
 	case CommandSystemInfoGetInfo:
 		v = new(systeminfo.GetInfoReturns)
+
+	case CommandSystemInfoGetFeatureState:
+		v = new(systeminfo.GetFeatureStateReturns)
 
 	case CommandSystemInfoGetProcessInfo:
 		v = new(systeminfo.GetProcessInfoReturns)
@@ -2240,7 +2774,7 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		v = new(target.AttachToBrowserTargetReturns)
 
 	case CommandTargetCloseTarget:
-		v = new(target.CloseTargetReturns)
+		return emptyVal, nil
 
 	case CommandTargetExposeDevToolsProtocol:
 		return emptyVal, nil
@@ -2267,6 +2801,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 		v = new(target.GetTargetsReturns)
 
 	case CommandTargetSetAutoAttach:
+		return emptyVal, nil
+
+	case CommandTargetAutoAttachRelated:
 		return emptyVal, nil
 
 	case CommandTargetSetDiscoverTargets:
@@ -2386,6 +2923,9 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 	case CommandWebAuthnAddVirtualAuthenticator:
 		v = new(webauthn.AddVirtualAuthenticatorReturns)
 
+	case CommandWebAuthnSetResponseOverrideBits:
+		return emptyVal, nil
+
 	case CommandWebAuthnRemoveVirtualAuthenticator:
 		return emptyVal, nil
 
@@ -2406,6 +2946,15 @@ func UnmarshalMessage(msg *Message) (interface{}, error) {
 
 	case CommandWebAuthnSetUserVerified:
 		return emptyVal, nil
+
+	case CommandWebAuthnSetAutomaticPresenceSimulation:
+		return emptyVal, nil
+
+	case EventWebAuthnCredentialAdded:
+		v = new(webauthn.EventCredentialAdded)
+
+	case EventWebAuthnCredentialAsserted:
+		v = new(webauthn.EventCredentialAsserted)
 
 	default:
 		return nil, cdp.ErrUnknownCommandOrEvent(msg.Method)
