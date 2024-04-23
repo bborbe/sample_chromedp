@@ -301,33 +301,35 @@ func (t MixedContentResourceType) String() string {
 
 // MixedContentResourceType values.
 const (
-	MixedContentResourceTypeAttributionSrc MixedContentResourceType = "AttributionSrc"
-	MixedContentResourceTypeAudio          MixedContentResourceType = "Audio"
-	MixedContentResourceTypeBeacon         MixedContentResourceType = "Beacon"
-	MixedContentResourceTypeCSPReport      MixedContentResourceType = "CSPReport"
-	MixedContentResourceTypeDownload       MixedContentResourceType = "Download"
-	MixedContentResourceTypeEventSource    MixedContentResourceType = "EventSource"
-	MixedContentResourceTypeFavicon        MixedContentResourceType = "Favicon"
-	MixedContentResourceTypeFont           MixedContentResourceType = "Font"
-	MixedContentResourceTypeForm           MixedContentResourceType = "Form"
-	MixedContentResourceTypeFrame          MixedContentResourceType = "Frame"
-	MixedContentResourceTypeImage          MixedContentResourceType = "Image"
-	MixedContentResourceTypeImport         MixedContentResourceType = "Import"
-	MixedContentResourceTypeManifest       MixedContentResourceType = "Manifest"
-	MixedContentResourceTypePing           MixedContentResourceType = "Ping"
-	MixedContentResourceTypePluginData     MixedContentResourceType = "PluginData"
-	MixedContentResourceTypePluginResource MixedContentResourceType = "PluginResource"
-	MixedContentResourceTypePrefetch       MixedContentResourceType = "Prefetch"
-	MixedContentResourceTypeResource       MixedContentResourceType = "Resource"
-	MixedContentResourceTypeScript         MixedContentResourceType = "Script"
-	MixedContentResourceTypeServiceWorker  MixedContentResourceType = "ServiceWorker"
-	MixedContentResourceTypeSharedWorker   MixedContentResourceType = "SharedWorker"
-	MixedContentResourceTypeStylesheet     MixedContentResourceType = "Stylesheet"
-	MixedContentResourceTypeTrack          MixedContentResourceType = "Track"
-	MixedContentResourceTypeVideo          MixedContentResourceType = "Video"
-	MixedContentResourceTypeWorker         MixedContentResourceType = "Worker"
-	MixedContentResourceTypeXMLHTTPRequest MixedContentResourceType = "XMLHttpRequest"
-	MixedContentResourceTypeXSLT           MixedContentResourceType = "XSLT"
+	MixedContentResourceTypeAttributionSrc   MixedContentResourceType = "AttributionSrc"
+	MixedContentResourceTypeAudio            MixedContentResourceType = "Audio"
+	MixedContentResourceTypeBeacon           MixedContentResourceType = "Beacon"
+	MixedContentResourceTypeCSPReport        MixedContentResourceType = "CSPReport"
+	MixedContentResourceTypeDownload         MixedContentResourceType = "Download"
+	MixedContentResourceTypeEventSource      MixedContentResourceType = "EventSource"
+	MixedContentResourceTypeFavicon          MixedContentResourceType = "Favicon"
+	MixedContentResourceTypeFont             MixedContentResourceType = "Font"
+	MixedContentResourceTypeForm             MixedContentResourceType = "Form"
+	MixedContentResourceTypeFrame            MixedContentResourceType = "Frame"
+	MixedContentResourceTypeImage            MixedContentResourceType = "Image"
+	MixedContentResourceTypeImport           MixedContentResourceType = "Import"
+	MixedContentResourceTypeJSON             MixedContentResourceType = "JSON"
+	MixedContentResourceTypeManifest         MixedContentResourceType = "Manifest"
+	MixedContentResourceTypePing             MixedContentResourceType = "Ping"
+	MixedContentResourceTypePluginData       MixedContentResourceType = "PluginData"
+	MixedContentResourceTypePluginResource   MixedContentResourceType = "PluginResource"
+	MixedContentResourceTypePrefetch         MixedContentResourceType = "Prefetch"
+	MixedContentResourceTypeResource         MixedContentResourceType = "Resource"
+	MixedContentResourceTypeScript           MixedContentResourceType = "Script"
+	MixedContentResourceTypeServiceWorker    MixedContentResourceType = "ServiceWorker"
+	MixedContentResourceTypeSharedWorker     MixedContentResourceType = "SharedWorker"
+	MixedContentResourceTypeSpeculationRules MixedContentResourceType = "SpeculationRules"
+	MixedContentResourceTypeStylesheet       MixedContentResourceType = "Stylesheet"
+	MixedContentResourceTypeTrack            MixedContentResourceType = "Track"
+	MixedContentResourceTypeVideo            MixedContentResourceType = "Video"
+	MixedContentResourceTypeWorker           MixedContentResourceType = "Worker"
+	MixedContentResourceTypeXMLHTTPRequest   MixedContentResourceType = "XMLHttpRequest"
+	MixedContentResourceTypeXSLT             MixedContentResourceType = "XSLT"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -368,6 +370,8 @@ func (t *MixedContentResourceType) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = MixedContentResourceTypeImage
 	case MixedContentResourceTypeImport:
 		*t = MixedContentResourceTypeImport
+	case MixedContentResourceTypeJSON:
+		*t = MixedContentResourceTypeJSON
 	case MixedContentResourceTypeManifest:
 		*t = MixedContentResourceTypeManifest
 	case MixedContentResourceTypePing:
@@ -386,6 +390,8 @@ func (t *MixedContentResourceType) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = MixedContentResourceTypeServiceWorker
 	case MixedContentResourceTypeSharedWorker:
 		*t = MixedContentResourceTypeSharedWorker
+	case MixedContentResourceTypeSpeculationRules:
+		*t = MixedContentResourceTypeSpeculationRules
 	case MixedContentResourceTypeStylesheet:
 		*t = MixedContentResourceTypeStylesheet
 	case MixedContentResourceTypeTrack:
@@ -780,6 +786,11 @@ const (
 	AttributionReportingIssueTypeWebAndOsHeaders                                      AttributionReportingIssueType = "WebAndOsHeaders"
 	AttributionReportingIssueTypeNoWebOrOsSupport                                     AttributionReportingIssueType = "NoWebOrOsSupport"
 	AttributionReportingIssueTypeNavigationRegistrationWithoutTransientUserActivation AttributionReportingIssueType = "NavigationRegistrationWithoutTransientUserActivation"
+	AttributionReportingIssueTypeInvalidInfoHeader                                    AttributionReportingIssueType = "InvalidInfoHeader"
+	AttributionReportingIssueTypeNoRegisterSourceHeader                               AttributionReportingIssueType = "NoRegisterSourceHeader"
+	AttributionReportingIssueTypeNoRegisterTriggerHeader                              AttributionReportingIssueType = "NoRegisterTriggerHeader"
+	AttributionReportingIssueTypeNoRegisterOsSourceHeader                             AttributionReportingIssueType = "NoRegisterOsSourceHeader"
+	AttributionReportingIssueTypeNoRegisterOsTriggerHeader                            AttributionReportingIssueType = "NoRegisterOsTriggerHeader"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -826,6 +837,16 @@ func (t *AttributionReportingIssueType) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = AttributionReportingIssueTypeNoWebOrOsSupport
 	case AttributionReportingIssueTypeNavigationRegistrationWithoutTransientUserActivation:
 		*t = AttributionReportingIssueTypeNavigationRegistrationWithoutTransientUserActivation
+	case AttributionReportingIssueTypeInvalidInfoHeader:
+		*t = AttributionReportingIssueTypeInvalidInfoHeader
+	case AttributionReportingIssueTypeNoRegisterSourceHeader:
+		*t = AttributionReportingIssueTypeNoRegisterSourceHeader
+	case AttributionReportingIssueTypeNoRegisterTriggerHeader:
+		*t = AttributionReportingIssueTypeNoRegisterTriggerHeader
+	case AttributionReportingIssueTypeNoRegisterOsSourceHeader:
+		*t = AttributionReportingIssueTypeNoRegisterOsSourceHeader
+	case AttributionReportingIssueTypeNoRegisterOsTriggerHeader:
+		*t = AttributionReportingIssueTypeNoRegisterOsTriggerHeader
 
 	default:
 		in.AddError(fmt.Errorf("unknown AttributionReportingIssueType value: %v", v))
@@ -1078,6 +1099,8 @@ const (
 	FederatedAuthRequestIssueReasonIDTokenHTTPNotFound              FederatedAuthRequestIssueReason = "IdTokenHttpNotFound"
 	FederatedAuthRequestIssueReasonIDTokenNoResponse                FederatedAuthRequestIssueReason = "IdTokenNoResponse"
 	FederatedAuthRequestIssueReasonIDTokenInvalidResponse           FederatedAuthRequestIssueReason = "IdTokenInvalidResponse"
+	FederatedAuthRequestIssueReasonIDTokenIdpErrorResponse          FederatedAuthRequestIssueReason = "IdTokenIdpErrorResponse"
+	FederatedAuthRequestIssueReasonIDTokenCrossSiteIdpErrorResponse FederatedAuthRequestIssueReason = "IdTokenCrossSiteIdpErrorResponse"
 	FederatedAuthRequestIssueReasonIDTokenInvalidRequest            FederatedAuthRequestIssueReason = "IdTokenInvalidRequest"
 	FederatedAuthRequestIssueReasonIDTokenInvalidContentType        FederatedAuthRequestIssueReason = "IdTokenInvalidContentType"
 	FederatedAuthRequestIssueReasonErrorIDToken                     FederatedAuthRequestIssueReason = "ErrorIdToken"
@@ -1086,6 +1109,8 @@ const (
 	FederatedAuthRequestIssueReasonSilentMediationFailure           FederatedAuthRequestIssueReason = "SilentMediationFailure"
 	FederatedAuthRequestIssueReasonThirdPartyCookiesBlocked         FederatedAuthRequestIssueReason = "ThirdPartyCookiesBlocked"
 	FederatedAuthRequestIssueReasonNotSignedInWithIdp               FederatedAuthRequestIssueReason = "NotSignedInWithIdp"
+	FederatedAuthRequestIssueReasonMissingTransientUserActivation   FederatedAuthRequestIssueReason = "MissingTransientUserActivation"
+	FederatedAuthRequestIssueReasonReplacedByButtonMode             FederatedAuthRequestIssueReason = "ReplacedByButtonMode"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -1158,6 +1183,10 @@ func (t *FederatedAuthRequestIssueReason) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = FederatedAuthRequestIssueReasonIDTokenNoResponse
 	case FederatedAuthRequestIssueReasonIDTokenInvalidResponse:
 		*t = FederatedAuthRequestIssueReasonIDTokenInvalidResponse
+	case FederatedAuthRequestIssueReasonIDTokenIdpErrorResponse:
+		*t = FederatedAuthRequestIssueReasonIDTokenIdpErrorResponse
+	case FederatedAuthRequestIssueReasonIDTokenCrossSiteIdpErrorResponse:
+		*t = FederatedAuthRequestIssueReasonIDTokenCrossSiteIdpErrorResponse
 	case FederatedAuthRequestIssueReasonIDTokenInvalidRequest:
 		*t = FederatedAuthRequestIssueReasonIDTokenInvalidRequest
 	case FederatedAuthRequestIssueReasonIDTokenInvalidContentType:
@@ -1174,6 +1203,10 @@ func (t *FederatedAuthRequestIssueReason) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = FederatedAuthRequestIssueReasonThirdPartyCookiesBlocked
 	case FederatedAuthRequestIssueReasonNotSignedInWithIdp:
 		*t = FederatedAuthRequestIssueReasonNotSignedInWithIdp
+	case FederatedAuthRequestIssueReasonMissingTransientUserActivation:
+		*t = FederatedAuthRequestIssueReasonMissingTransientUserActivation
+	case FederatedAuthRequestIssueReasonReplacedByButtonMode:
+		*t = FederatedAuthRequestIssueReasonReplacedByButtonMode
 
 	default:
 		in.AddError(fmt.Errorf("unknown FederatedAuthRequestIssueReason value: %v", v))
