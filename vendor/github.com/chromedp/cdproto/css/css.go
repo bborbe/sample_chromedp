@@ -221,6 +221,34 @@ func (p *ForcePseudoStateParams) Do(ctx context.Context) (err error) {
 	return cdp.Execute(ctx, CommandForcePseudoState, p, nil)
 }
 
+// ForceStartingStyleParams ensures that the given node is in its
+// starting-style state.
+type ForceStartingStyleParams struct {
+	NodeID cdp.NodeID `json:"nodeId"` // The element id for which to force the starting-style state.
+	Forced bool       `json:"forced"` // Boolean indicating if this is on or off.
+}
+
+// ForceStartingStyle ensures that the given node is in its starting-style
+// state.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/CSS#method-forceStartingStyle
+//
+// parameters:
+//
+//	nodeID - The element id for which to force the starting-style state.
+//	forced - Boolean indicating if this is on or off.
+func ForceStartingStyle(nodeID cdp.NodeID, forced bool) *ForceStartingStyleParams {
+	return &ForceStartingStyleParams{
+		NodeID: nodeID,
+		Forced: forced,
+	}
+}
+
+// Do executes CSS.forceStartingStyle against the provided context.
+func (p *ForceStartingStyleParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandForceStartingStyle, p, nil)
+}
+
 // GetBackgroundColorsParams [no description].
 type GetBackgroundColorsParams struct {
 	NodeID cdp.NodeID `json:"nodeId"` // Id of the node to get background colors for.
@@ -305,6 +333,76 @@ func (p *GetComputedStyleForNodeParams) Do(ctx context.Context) (computedStyle [
 	return res.ComputedStyle, nil
 }
 
+// ResolveValuesParams resolve the specified values in the context of the
+// provided element. For example, a value of '1em' is evaluated according to the
+// computed 'font-size' of the element and a value 'calc(1px + 2px)' will be
+// resolved to '3px'.
+type ResolveValuesParams struct {
+	Values           []string       `json:"values"`                     // Substitution functions (var()/env()/attr()) and cascade-dependent keywords (revert/revert-layer) do not work.
+	NodeID           cdp.NodeID     `json:"nodeId"`                     // Id of the node in whose context the expression is evaluated
+	PropertyName     string         `json:"propertyName,omitempty"`     // Only longhands and custom property names are accepted.
+	PseudoType       cdp.PseudoType `json:"pseudoType,omitempty"`       // Pseudo element type, only works for pseudo elements that generate elements in the tree, such as ::before and ::after.
+	PseudoIdentifier string         `json:"pseudoIdentifier,omitempty"` // Pseudo element custom ident.
+}
+
+// ResolveValues resolve the specified values in the context of the provided
+// element. For example, a value of '1em' is evaluated according to the computed
+// 'font-size' of the element and a value 'calc(1px + 2px)' will be resolved to
+// '3px'.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/CSS#method-resolveValues
+//
+// parameters:
+//
+//	values - Substitution functions (var()/env()/attr()) and cascade-dependent keywords (revert/revert-layer) do not work.
+//	nodeID - Id of the node in whose context the expression is evaluated
+func ResolveValues(values []string, nodeID cdp.NodeID) *ResolveValuesParams {
+	return &ResolveValuesParams{
+		Values: values,
+		NodeID: nodeID,
+	}
+}
+
+// WithPropertyName only longhands and custom property names are accepted.
+func (p ResolveValuesParams) WithPropertyName(propertyName string) *ResolveValuesParams {
+	p.PropertyName = propertyName
+	return &p
+}
+
+// WithPseudoType pseudo element type, only works for pseudo elements that
+// generate elements in the tree, such as ::before and ::after.
+func (p ResolveValuesParams) WithPseudoType(pseudoType cdp.PseudoType) *ResolveValuesParams {
+	p.PseudoType = pseudoType
+	return &p
+}
+
+// WithPseudoIdentifier pseudo element custom ident.
+func (p ResolveValuesParams) WithPseudoIdentifier(pseudoIdentifier string) *ResolveValuesParams {
+	p.PseudoIdentifier = pseudoIdentifier
+	return &p
+}
+
+// ResolveValuesReturns return values.
+type ResolveValuesReturns struct {
+	Results []string `json:"results,omitempty"`
+}
+
+// Do executes CSS.resolveValues against the provided context.
+//
+// returns:
+//
+//	results
+func (p *ResolveValuesParams) Do(ctx context.Context) (results []string, err error) {
+	// execute
+	var res ResolveValuesReturns
+	err = cdp.Execute(ctx, CommandResolveValues, p, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Results, nil
+}
+
 // GetInlineStylesForNodeParams returns the styles defined inline (explicitly
 // in the "style" attribute and implicitly, using DOM attributes) for a DOM node
 // identified by nodeId.
@@ -350,6 +448,53 @@ func (p *GetInlineStylesForNodeParams) Do(ctx context.Context) (inlineStyle *Sty
 	return res.InlineStyle, res.AttributesStyle, nil
 }
 
+// GetAnimatedStylesForNodeParams returns the styles coming from animations &
+// transitions including the animation & transition styles coming from
+// inheritance chain.
+type GetAnimatedStylesForNodeParams struct {
+	NodeID cdp.NodeID `json:"nodeId"`
+}
+
+// GetAnimatedStylesForNode returns the styles coming from animations &
+// transitions including the animation & transition styles coming from
+// inheritance chain.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/CSS#method-getAnimatedStylesForNode
+//
+// parameters:
+//
+//	nodeID
+func GetAnimatedStylesForNode(nodeID cdp.NodeID) *GetAnimatedStylesForNodeParams {
+	return &GetAnimatedStylesForNodeParams{
+		NodeID: nodeID,
+	}
+}
+
+// GetAnimatedStylesForNodeReturns return values.
+type GetAnimatedStylesForNodeReturns struct {
+	AnimationStyles  []*AnimationStyle              `json:"animationStyles,omitempty"`  // Styles coming from animations.
+	TransitionsStyle *Style                         `json:"transitionsStyle,omitempty"` // Style coming from transitions.
+	Inherited        []*InheritedAnimatedStyleEntry `json:"inherited,omitempty"`        // Inherited style entries for animationsStyle and transitionsStyle from the inheritance chain of the element.
+}
+
+// Do executes CSS.getAnimatedStylesForNode against the provided context.
+//
+// returns:
+//
+//	animationStyles - Styles coming from animations.
+//	transitionsStyle - Style coming from transitions.
+//	inherited - Inherited style entries for animationsStyle and transitionsStyle from the inheritance chain of the element.
+func (p *GetAnimatedStylesForNodeParams) Do(ctx context.Context) (animationStyles []*AnimationStyle, transitionsStyle *Style, inherited []*InheritedAnimatedStyleEntry, err error) {
+	// execute
+	var res GetAnimatedStylesForNodeReturns
+	err = cdp.Execute(ctx, CommandGetAnimatedStylesForNode, p, &res)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return res.AnimationStyles, res.TransitionsStyle, res.Inherited, nil
+}
+
 // GetMatchedStylesForNodeParams returns requested styles for a DOM node
 // identified by nodeId.
 type GetMatchedStylesForNodeParams struct {
@@ -372,18 +517,19 @@ func GetMatchedStylesForNode(nodeID cdp.NodeID) *GetMatchedStylesForNodeParams {
 
 // GetMatchedStylesForNodeReturns return values.
 type GetMatchedStylesForNodeReturns struct {
-	InlineStyle              *Style                           `json:"inlineStyle,omitempty"`              // Inline style for the specified DOM node.
-	AttributesStyle          *Style                           `json:"attributesStyle,omitempty"`          // Attribute-defined element style (e.g. resulting from "width=20 height=100%").
-	MatchedCSSRules          []*RuleMatch                     `json:"matchedCSSRules,omitempty"`          // CSS rules matching this node, from all applicable stylesheets.
-	PseudoElements           []*PseudoElementMatches          `json:"pseudoElements,omitempty"`           // Pseudo style matches for this node.
-	Inherited                []*InheritedStyleEntry           `json:"inherited,omitempty"`                // A chain of inherited styles (from the immediate node parent up to the DOM tree root).
-	InheritedPseudoElements  []*InheritedPseudoElementMatches `json:"inheritedPseudoElements,omitempty"`  // A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
-	CSSKeyframesRules        []*KeyframesRule                 `json:"cssKeyframesRules,omitempty"`        // A list of CSS keyframed animations matching this node.
-	CSSPositionTryRules      []*PositionTryRule               `json:"cssPositionTryRules,omitempty"`      // A list of CSS @position-try rules matching this node, based on the position-try-options property.
-	CSSPropertyRules         []*PropertyRule                  `json:"cssPropertyRules,omitempty"`         // A list of CSS at-property rules matching this node.
-	CSSPropertyRegistrations []*PropertyRegistration          `json:"cssPropertyRegistrations,omitempty"` // A list of CSS property registrations matching this node.
-	CSSFontPaletteValuesRule *FontPaletteValuesRule           `json:"cssFontPaletteValuesRule,omitempty"` // A font-palette-values rule matching this node.
-	ParentLayoutNodeID       cdp.NodeID                       `json:"parentLayoutNodeId,omitempty"`       // Id of the first parent element that does not have display: contents.
+	InlineStyle                 *Style                           `json:"inlineStyle,omitempty"`                 // Inline style for the specified DOM node.
+	AttributesStyle             *Style                           `json:"attributesStyle,omitempty"`             // Attribute-defined element style (e.g. resulting from "width=20 height=100%").
+	MatchedCSSRules             []*RuleMatch                     `json:"matchedCSSRules,omitempty"`             // CSS rules matching this node, from all applicable stylesheets.
+	PseudoElements              []*PseudoElementMatches          `json:"pseudoElements,omitempty"`              // Pseudo style matches for this node.
+	Inherited                   []*InheritedStyleEntry           `json:"inherited,omitempty"`                   // A chain of inherited styles (from the immediate node parent up to the DOM tree root).
+	InheritedPseudoElements     []*InheritedPseudoElementMatches `json:"inheritedPseudoElements,omitempty"`     // A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
+	CSSKeyframesRules           []*KeyframesRule                 `json:"cssKeyframesRules,omitempty"`           // A list of CSS keyframed animations matching this node.
+	CSSPositionTryRules         []*PositionTryRule               `json:"cssPositionTryRules,omitempty"`         // A list of CSS @position-try rules matching this node, based on the position-try-fallbacks property.
+	ActivePositionFallbackIndex int64                            `json:"activePositionFallbackIndex,omitempty"` // Index of the active fallback in the applied position-try-fallback property, will not be set if there is no active position-try fallback.
+	CSSPropertyRules            []*PropertyRule                  `json:"cssPropertyRules,omitempty"`            // A list of CSS at-property rules matching this node.
+	CSSPropertyRegistrations    []*PropertyRegistration          `json:"cssPropertyRegistrations,omitempty"`    // A list of CSS property registrations matching this node.
+	CSSFontPaletteValuesRule    *FontPaletteValuesRule           `json:"cssFontPaletteValuesRule,omitempty"`    // A font-palette-values rule matching this node.
+	ParentLayoutNodeID          cdp.NodeID                       `json:"parentLayoutNodeId,omitempty"`          // Id of the first parent element that does not have display: contents.
 }
 
 // Do executes CSS.getMatchedStylesForNode against the provided context.
@@ -397,20 +543,21 @@ type GetMatchedStylesForNodeReturns struct {
 //	inherited - A chain of inherited styles (from the immediate node parent up to the DOM tree root).
 //	inheritedPseudoElements - A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
 //	cssKeyframesRules - A list of CSS keyframed animations matching this node.
-//	cssPositionTryRules - A list of CSS @position-try rules matching this node, based on the position-try-options property.
+//	cssPositionTryRules - A list of CSS @position-try rules matching this node, based on the position-try-fallbacks property.
+//	activePositionFallbackIndex - Index of the active fallback in the applied position-try-fallback property, will not be set if there is no active position-try fallback.
 //	cssPropertyRules - A list of CSS at-property rules matching this node.
 //	cssPropertyRegistrations - A list of CSS property registrations matching this node.
 //	cssFontPaletteValuesRule - A font-palette-values rule matching this node.
 //	parentLayoutNodeID - Id of the first parent element that does not have display: contents.
-func (p *GetMatchedStylesForNodeParams) Do(ctx context.Context) (inlineStyle *Style, attributesStyle *Style, matchedCSSRules []*RuleMatch, pseudoElements []*PseudoElementMatches, inherited []*InheritedStyleEntry, inheritedPseudoElements []*InheritedPseudoElementMatches, cssKeyframesRules []*KeyframesRule, cssPositionTryRules []*PositionTryRule, cssPropertyRules []*PropertyRule, cssPropertyRegistrations []*PropertyRegistration, cssFontPaletteValuesRule *FontPaletteValuesRule, parentLayoutNodeID cdp.NodeID, err error) {
+func (p *GetMatchedStylesForNodeParams) Do(ctx context.Context) (inlineStyle *Style, attributesStyle *Style, matchedCSSRules []*RuleMatch, pseudoElements []*PseudoElementMatches, inherited []*InheritedStyleEntry, inheritedPseudoElements []*InheritedPseudoElementMatches, cssKeyframesRules []*KeyframesRule, cssPositionTryRules []*PositionTryRule, activePositionFallbackIndex int64, cssPropertyRules []*PropertyRule, cssPropertyRegistrations []*PropertyRegistration, cssFontPaletteValuesRule *FontPaletteValuesRule, parentLayoutNodeID cdp.NodeID, err error) {
 	// execute
 	var res GetMatchedStylesForNodeReturns
 	err = cdp.Execute(ctx, CommandGetMatchedStylesForNode, p, &res)
 	if err != nil {
-		return nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 0, err
+		return nil, nil, nil, nil, nil, nil, nil, nil, 0, nil, nil, nil, 0, err
 	}
 
-	return res.InlineStyle, res.AttributesStyle, res.MatchedCSSRules, res.PseudoElements, res.Inherited, res.InheritedPseudoElements, res.CSSKeyframesRules, res.CSSPositionTryRules, res.CSSPropertyRules, res.CSSPropertyRegistrations, res.CSSFontPaletteValuesRule, res.ParentLayoutNodeID, nil
+	return res.InlineStyle, res.AttributesStyle, res.MatchedCSSRules, res.PseudoElements, res.Inherited, res.InheritedPseudoElements, res.CSSKeyframesRules, res.CSSPositionTryRules, res.ActivePositionFallbackIndex, res.CSSPropertyRules, res.CSSPropertyRegistrations, res.CSSFontPaletteValuesRule, res.ParentLayoutNodeID, nil
 }
 
 // GetMediaQueriesParams returns all media queries parsed by the rendering
@@ -617,6 +764,39 @@ func (p *GetLocationForSelectorParams) Do(ctx context.Context) (ranges []*Source
 	}
 
 	return res.Ranges, nil
+}
+
+// TrackComputedStyleUpdatesForNodeParams starts tracking the given node for
+// the computed style updates and whenever the computed style is updated for
+// node, it queues a computedStyleUpdated event with throttling. There can only
+// be 1 node tracked for computed style updates so passing a new node id removes
+// tracking from the previous node. Pass undefined to disable tracking.
+type TrackComputedStyleUpdatesForNodeParams struct {
+	NodeID cdp.NodeID `json:"nodeId,omitempty"`
+}
+
+// TrackComputedStyleUpdatesForNode starts tracking the given node for the
+// computed style updates and whenever the computed style is updated for node,
+// it queues a computedStyleUpdated event with throttling. There can only be 1
+// node tracked for computed style updates so passing a new node id removes
+// tracking from the previous node. Pass undefined to disable tracking.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/CSS#method-trackComputedStyleUpdatesForNode
+//
+// parameters:
+func TrackComputedStyleUpdatesForNode() *TrackComputedStyleUpdatesForNodeParams {
+	return &TrackComputedStyleUpdatesForNodeParams{}
+}
+
+// WithNodeID [no description].
+func (p TrackComputedStyleUpdatesForNodeParams) WithNodeID(nodeID cdp.NodeID) *TrackComputedStyleUpdatesForNodeParams {
+	p.NodeID = nodeID
+	return &p
+}
+
+// Do executes CSS.trackComputedStyleUpdatesForNode against the provided context.
+func (p *TrackComputedStyleUpdatesForNodeParams) Do(ctx context.Context) (err error) {
+	return cdp.Execute(ctx, CommandTrackComputedStyleUpdatesForNode, p, nil)
 }
 
 // TrackComputedStyleUpdatesParams starts tracking the given computed styles
@@ -1247,15 +1427,19 @@ const (
 	CommandDisable                          = "CSS.disable"
 	CommandEnable                           = "CSS.enable"
 	CommandForcePseudoState                 = "CSS.forcePseudoState"
+	CommandForceStartingStyle               = "CSS.forceStartingStyle"
 	CommandGetBackgroundColors              = "CSS.getBackgroundColors"
 	CommandGetComputedStyleForNode          = "CSS.getComputedStyleForNode"
+	CommandResolveValues                    = "CSS.resolveValues"
 	CommandGetInlineStylesForNode           = "CSS.getInlineStylesForNode"
+	CommandGetAnimatedStylesForNode         = "CSS.getAnimatedStylesForNode"
 	CommandGetMatchedStylesForNode          = "CSS.getMatchedStylesForNode"
 	CommandGetMediaQueries                  = "CSS.getMediaQueries"
 	CommandGetPlatformFontsForNode          = "CSS.getPlatformFontsForNode"
 	CommandGetStyleSheetText                = "CSS.getStyleSheetText"
 	CommandGetLayersForNode                 = "CSS.getLayersForNode"
 	CommandGetLocationForSelector           = "CSS.getLocationForSelector"
+	CommandTrackComputedStyleUpdatesForNode = "CSS.trackComputedStyleUpdatesForNode"
 	CommandTrackComputedStyleUpdates        = "CSS.trackComputedStyleUpdates"
 	CommandTakeComputedStyleUpdates         = "CSS.takeComputedStyleUpdates"
 	CommandSetEffectivePropertyValueForNode = "CSS.setEffectivePropertyValueForNode"

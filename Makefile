@@ -10,8 +10,7 @@ ensure:
 	go mod vendor
 
 format:
-	find . -type f -name '*.go' -not -path './vendor/*' -exec gofmt -w "{}" +
-	find . -type f -name '*.go' -not -path './vendor/*' -exec go run -mod=vendor github.com/incu6us/goimports-reviser -project-name github.com/bborbe -file-path "{}" \;
+	go run -mod=vendor github.com/incu6us/goimports-reviser/v3 -project-name github.com/bborbe/sample-chromedp -format -excludes vendor ./...
 
 generate:
 	rm -rf mocks avro

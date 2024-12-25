@@ -170,18 +170,23 @@ func (t PseudoType) String() string {
 const (
 	PseudoTypeFirstLine               PseudoType = "first-line"
 	PseudoTypeFirstLetter             PseudoType = "first-letter"
+	PseudoTypeCheckmark               PseudoType = "checkmark"
 	PseudoTypeBefore                  PseudoType = "before"
 	PseudoTypeAfter                   PseudoType = "after"
+	PseudoTypePickerIcon              PseudoType = "picker-icon"
 	PseudoTypeMarker                  PseudoType = "marker"
 	PseudoTypeBackdrop                PseudoType = "backdrop"
+	PseudoTypeColumn                  PseudoType = "column"
 	PseudoTypeSelection               PseudoType = "selection"
+	PseudoTypeSearchText              PseudoType = "search-text"
 	PseudoTypeTargetText              PseudoType = "target-text"
 	PseudoTypeSpellingError           PseudoType = "spelling-error"
 	PseudoTypeGrammarError            PseudoType = "grammar-error"
 	PseudoTypeHighlight               PseudoType = "highlight"
 	PseudoTypeFirstLineInherited      PseudoType = "first-line-inherited"
 	PseudoTypeScrollMarker            PseudoType = "scroll-marker"
-	PseudoTypeScrollMarkers           PseudoType = "scroll-markers"
+	PseudoTypeScrollMarkerGroup       PseudoType = "scroll-marker-group"
+	PseudoTypeScrollButton            PseudoType = "scroll-button"
 	PseudoTypeScrollbar               PseudoType = "scrollbar"
 	PseudoTypeScrollbarThumb          PseudoType = "scrollbar-thumb"
 	PseudoTypeScrollbarButton         PseudoType = "scrollbar-button"
@@ -195,6 +200,10 @@ const (
 	PseudoTypeViewTransitionImagePair PseudoType = "view-transition-image-pair"
 	PseudoTypeViewTransitionOld       PseudoType = "view-transition-old"
 	PseudoTypeViewTransitionNew       PseudoType = "view-transition-new"
+	PseudoTypePlaceholder             PseudoType = "placeholder"
+	PseudoTypeFileSelectorButton      PseudoType = "file-selector-button"
+	PseudoTypeDetailsContent          PseudoType = "details-content"
+	PseudoTypePicker                  PseudoType = "picker"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -215,16 +224,24 @@ func (t *PseudoType) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PseudoTypeFirstLine
 	case PseudoTypeFirstLetter:
 		*t = PseudoTypeFirstLetter
+	case PseudoTypeCheckmark:
+		*t = PseudoTypeCheckmark
 	case PseudoTypeBefore:
 		*t = PseudoTypeBefore
 	case PseudoTypeAfter:
 		*t = PseudoTypeAfter
+	case PseudoTypePickerIcon:
+		*t = PseudoTypePickerIcon
 	case PseudoTypeMarker:
 		*t = PseudoTypeMarker
 	case PseudoTypeBackdrop:
 		*t = PseudoTypeBackdrop
+	case PseudoTypeColumn:
+		*t = PseudoTypeColumn
 	case PseudoTypeSelection:
 		*t = PseudoTypeSelection
+	case PseudoTypeSearchText:
+		*t = PseudoTypeSearchText
 	case PseudoTypeTargetText:
 		*t = PseudoTypeTargetText
 	case PseudoTypeSpellingError:
@@ -237,8 +254,10 @@ func (t *PseudoType) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PseudoTypeFirstLineInherited
 	case PseudoTypeScrollMarker:
 		*t = PseudoTypeScrollMarker
-	case PseudoTypeScrollMarkers:
-		*t = PseudoTypeScrollMarkers
+	case PseudoTypeScrollMarkerGroup:
+		*t = PseudoTypeScrollMarkerGroup
+	case PseudoTypeScrollButton:
+		*t = PseudoTypeScrollButton
 	case PseudoTypeScrollbar:
 		*t = PseudoTypeScrollbar
 	case PseudoTypeScrollbarThumb:
@@ -265,6 +284,14 @@ func (t *PseudoType) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PseudoTypeViewTransitionOld
 	case PseudoTypeViewTransitionNew:
 		*t = PseudoTypeViewTransitionNew
+	case PseudoTypePlaceholder:
+		*t = PseudoTypePlaceholder
+	case PseudoTypeFileSelectorButton:
+		*t = PseudoTypeFileSelectorButton
+	case PseudoTypeDetailsContent:
+		*t = PseudoTypeDetailsContent
+	case PseudoTypePicker:
+		*t = PseudoTypePicker
 
 	default:
 		in.AddError(fmt.Errorf("unknown PseudoType value: %v", v))
@@ -407,6 +434,7 @@ type Node struct {
 	IsSVG             bool              `json:"isSVG,omitempty"`            // Whether the node is SVG.
 	CompatibilityMode CompatibilityMode `json:"compatibilityMode,omitempty"`
 	AssignedSlot      *BackendNode      `json:"assignedSlot,omitempty"`
+	IsScrollable      bool              `json:"isScrollable,omitempty"`
 	Parent            *Node             `json:"-"` // Parent node.
 	Invalidated       chan struct{}     `json:"-"` // Invalidated channel.
 	State             NodeState         `json:"-"` // Node state.

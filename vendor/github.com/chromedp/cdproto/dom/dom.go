@@ -1131,6 +1131,50 @@ func (p *GetTopLayerElementsParams) Do(ctx context.Context) (nodeIDs []cdp.NodeI
 	return res.NodeIDs, nil
 }
 
+// GetElementByRelationParams returns the NodeId of the matched element
+// according to certain relations.
+type GetElementByRelationParams struct {
+	NodeID   cdp.NodeID                   `json:"nodeId"`   // Id of the node from which to query the relation.
+	Relation GetElementByRelationRelation `json:"relation"` // Type of relation to get.
+}
+
+// GetElementByRelation returns the NodeId of the matched element according
+// to certain relations.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/DOM#method-getElementByRelation
+//
+// parameters:
+//
+//	nodeID - Id of the node from which to query the relation.
+//	relation - Type of relation to get.
+func GetElementByRelation(nodeID cdp.NodeID, relation GetElementByRelationRelation) *GetElementByRelationParams {
+	return &GetElementByRelationParams{
+		NodeID:   nodeID,
+		Relation: relation,
+	}
+}
+
+// GetElementByRelationReturns return values.
+type GetElementByRelationReturns struct {
+	NodeID cdp.NodeID `json:"nodeId,omitempty"` // NodeId of the element matching the queried relation.
+}
+
+// Do executes DOM.getElementByRelation against the provided context.
+//
+// returns:
+//
+//	nodeID - NodeId of the element matching the queried relation.
+func (p *GetElementByRelationParams) Do(ctx context.Context) (nodeID cdp.NodeID, err error) {
+	// execute
+	var res GetElementByRelationReturns
+	err = cdp.Execute(ctx, CommandGetElementByRelation, p, &res)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.NodeID, nil
+}
+
 // RedoParams re-does the last undone action.
 type RedoParams struct{}
 
@@ -1569,6 +1613,37 @@ func (p *GetFileInfoParams) Do(ctx context.Context) (path string, err error) {
 	return res.Path, nil
 }
 
+// GetDetachedDomNodesParams returns list of detached nodes.
+type GetDetachedDomNodesParams struct{}
+
+// GetDetachedDomNodes returns list of detached nodes.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/DOM#method-getDetachedDomNodes
+func GetDetachedDomNodes() *GetDetachedDomNodesParams {
+	return &GetDetachedDomNodesParams{}
+}
+
+// GetDetachedDomNodesReturns return values.
+type GetDetachedDomNodesReturns struct {
+	DetachedNodes []*DetachedElementInfo `json:"detachedNodes,omitempty"` // The list of detached nodes
+}
+
+// Do executes DOM.getDetachedDomNodes against the provided context.
+//
+// returns:
+//
+//	detachedNodes - The list of detached nodes
+func (p *GetDetachedDomNodesParams) Do(ctx context.Context) (detachedNodes []*DetachedElementInfo, err error) {
+	// execute
+	var res GetDetachedDomNodesReturns
+	err = cdp.Execute(ctx, CommandGetDetachedDomNodes, nil, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.DetachedNodes, nil
+}
+
 // SetInspectedNodeParams enables console to refer to the node with given id
 // via $x (see Command Line API for more details $x functions).
 type SetInspectedNodeParams struct {
@@ -1746,20 +1821,23 @@ func (p *GetFrameOwnerParams) Do(ctx context.Context) (backendNodeID cdp.Backend
 }
 
 // GetContainerForNodeParams returns the query container of the given node
-// based on container query conditions: containerName, physical, and logical
-// axes. If no axes are provided, the style container is returned, which is the
+// based on container query conditions: containerName, physical and logical
+// axes, and whether it queries scroll-state. If no axes are provided and
+// queriesScrollState is false, the style container is returned, which is the
 // direct parent or the closest element with a matching container-name.
 type GetContainerForNodeParams struct {
-	NodeID        cdp.NodeID   `json:"nodeId"`
-	ContainerName string       `json:"containerName,omitempty"`
-	PhysicalAxes  PhysicalAxes `json:"physicalAxes,omitempty"`
-	LogicalAxes   LogicalAxes  `json:"logicalAxes,omitempty"`
+	NodeID             cdp.NodeID   `json:"nodeId"`
+	ContainerName      string       `json:"containerName,omitempty"`
+	PhysicalAxes       PhysicalAxes `json:"physicalAxes,omitempty"`
+	LogicalAxes        LogicalAxes  `json:"logicalAxes,omitempty"`
+	QueriesScrollState bool         `json:"queriesScrollState,omitempty"`
 }
 
 // GetContainerForNode returns the query container of the given node based on
-// container query conditions: containerName, physical, and logical axes. If no
-// axes are provided, the style container is returned, which is the direct
-// parent or the closest element with a matching container-name.
+// container query conditions: containerName, physical and logical axes, and
+// whether it queries scroll-state. If no axes are provided and
+// queriesScrollState is false, the style container is returned, which is the
+// direct parent or the closest element with a matching container-name.
 //
 // See: https://chromedevtools.github.io/devtools-protocol/tot/DOM#method-getContainerForNode
 //
@@ -1787,6 +1865,12 @@ func (p GetContainerForNodeParams) WithPhysicalAxes(physicalAxes PhysicalAxes) *
 // WithLogicalAxes [no description].
 func (p GetContainerForNodeParams) WithLogicalAxes(logicalAxes LogicalAxes) *GetContainerForNodeParams {
 	p.LogicalAxes = logicalAxes
+	return &p
+}
+
+// WithQueriesScrollState [no description].
+func (p GetContainerForNodeParams) WithQueriesScrollState(queriesScrollState bool) *GetContainerForNodeParams {
+	p.QueriesScrollState = queriesScrollState
 	return &p
 }
 
@@ -1852,6 +1936,58 @@ func (p *GetQueryingDescendantsForContainerParams) Do(ctx context.Context) (node
 	return res.NodeIDs, nil
 }
 
+// GetAnchorElementParams returns the target anchor element of the given
+// anchor query according to
+// https://www.w3.org/TR/css-anchor-position-1/#target.
+type GetAnchorElementParams struct {
+	NodeID          cdp.NodeID `json:"nodeId"`                    // Id of the positioned element from which to find the anchor.
+	AnchorSpecifier string     `json:"anchorSpecifier,omitempty"` // An optional anchor specifier, as defined in https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier. If not provided, it will return the implicit anchor element for the given positioned element.
+}
+
+// GetAnchorElement returns the target anchor element of the given anchor
+// query according to https://www.w3.org/TR/css-anchor-position-1/#target.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/DOM#method-getAnchorElement
+//
+// parameters:
+//
+//	nodeID - Id of the positioned element from which to find the anchor.
+func GetAnchorElement(nodeID cdp.NodeID) *GetAnchorElementParams {
+	return &GetAnchorElementParams{
+		NodeID: nodeID,
+	}
+}
+
+// WithAnchorSpecifier an optional anchor specifier, as defined in
+// https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier. If not
+// provided, it will return the implicit anchor element for the given positioned
+// element.
+func (p GetAnchorElementParams) WithAnchorSpecifier(anchorSpecifier string) *GetAnchorElementParams {
+	p.AnchorSpecifier = anchorSpecifier
+	return &p
+}
+
+// GetAnchorElementReturns return values.
+type GetAnchorElementReturns struct {
+	NodeID cdp.NodeID `json:"nodeId,omitempty"` // The anchor element of the given anchor query.
+}
+
+// Do executes DOM.getAnchorElement against the provided context.
+//
+// returns:
+//
+//	nodeID - The anchor element of the given anchor query.
+func (p *GetAnchorElementParams) Do(ctx context.Context) (nodeID cdp.NodeID, err error) {
+	// execute
+	var res GetAnchorElementReturns
+	err = cdp.Execute(ctx, CommandGetAnchorElement, p, &res)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.NodeID, nil
+}
+
 // Command names.
 const (
 	CommandCollectClassNamesFromSubtree       = "DOM.collectClassNamesFromSubtree"
@@ -1879,6 +2015,7 @@ const (
 	CommandQuerySelector                      = "DOM.querySelector"
 	CommandQuerySelectorAll                   = "DOM.querySelectorAll"
 	CommandGetTopLayerElements                = "DOM.getTopLayerElements"
+	CommandGetElementByRelation               = "DOM.getElementByRelation"
 	CommandRedo                               = "DOM.redo"
 	CommandRemoveAttribute                    = "DOM.removeAttribute"
 	CommandRemoveNode                         = "DOM.removeNode"
@@ -1891,6 +2028,7 @@ const (
 	CommandSetNodeStackTracesEnabled          = "DOM.setNodeStackTracesEnabled"
 	CommandGetNodeStackTraces                 = "DOM.getNodeStackTraces"
 	CommandGetFileInfo                        = "DOM.getFileInfo"
+	CommandGetDetachedDomNodes                = "DOM.getDetachedDomNodes"
 	CommandSetInspectedNode                   = "DOM.setInspectedNode"
 	CommandSetNodeName                        = "DOM.setNodeName"
 	CommandSetNodeValue                       = "DOM.setNodeValue"
@@ -1899,4 +2037,5 @@ const (
 	CommandGetFrameOwner                      = "DOM.getFrameOwner"
 	CommandGetContainerForNode                = "DOM.getContainerForNode"
 	CommandGetQueryingDescendantsForContainer = "DOM.getQueryingDescendantsForContainer"
+	CommandGetAnchorElement                   = "DOM.getAnchorElement"
 )

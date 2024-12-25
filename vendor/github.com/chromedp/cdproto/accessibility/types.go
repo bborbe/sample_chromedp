@@ -297,6 +297,7 @@ func (t PropertyName) String() string {
 
 // PropertyName values.
 const (
+	PropertyNameActions          PropertyName = "actions"
 	PropertyNameBusy             PropertyName = "busy"
 	PropertyNameDisabled         PropertyName = "disabled"
 	PropertyNameEditable         PropertyName = "editable"
@@ -336,6 +337,7 @@ const (
 	PropertyNameFlowto           PropertyName = "flowto"
 	PropertyNameLabelledby       PropertyName = "labelledby"
 	PropertyNameOwns             PropertyName = "owns"
+	PropertyNameURL              PropertyName = "url"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -352,6 +354,8 @@ func (t PropertyName) MarshalJSON() ([]byte, error) {
 func (t *PropertyName) UnmarshalEasyJSON(in *jlexer.Lexer) {
 	v := in.String()
 	switch PropertyName(v) {
+	case PropertyNameActions:
+		*t = PropertyNameActions
 	case PropertyNameBusy:
 		*t = PropertyNameBusy
 	case PropertyNameDisabled:
@@ -430,6 +434,8 @@ func (t *PropertyName) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PropertyNameLabelledby
 	case PropertyNameOwns:
 		*t = PropertyNameOwns
+	case PropertyNameURL:
+		*t = PropertyNameURL
 
 	default:
 		in.AddError(fmt.Errorf("unknown PropertyName value: %v", v))

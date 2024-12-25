@@ -36,91 +36,100 @@ func (t PermissionsPolicyFeature) String() string {
 
 // PermissionsPolicyFeature values.
 const (
-	PermissionsPolicyFeatureAccelerometer                PermissionsPolicyFeature = "accelerometer"
-	PermissionsPolicyFeatureAmbientLightSensor           PermissionsPolicyFeature = "ambient-light-sensor"
-	PermissionsPolicyFeatureAttributionReporting         PermissionsPolicyFeature = "attribution-reporting"
-	PermissionsPolicyFeatureAutoplay                     PermissionsPolicyFeature = "autoplay"
-	PermissionsPolicyFeatureBluetooth                    PermissionsPolicyFeature = "bluetooth"
-	PermissionsPolicyFeatureBrowsingTopics               PermissionsPolicyFeature = "browsing-topics"
-	PermissionsPolicyFeatureCamera                       PermissionsPolicyFeature = "camera"
-	PermissionsPolicyFeatureCapturedSurfaceControl       PermissionsPolicyFeature = "captured-surface-control"
-	PermissionsPolicyFeatureChDpr                        PermissionsPolicyFeature = "ch-dpr"
-	PermissionsPolicyFeatureChDeviceMemory               PermissionsPolicyFeature = "ch-device-memory"
-	PermissionsPolicyFeatureChDownlink                   PermissionsPolicyFeature = "ch-downlink"
-	PermissionsPolicyFeatureChEct                        PermissionsPolicyFeature = "ch-ect"
-	PermissionsPolicyFeatureChPrefersColorScheme         PermissionsPolicyFeature = "ch-prefers-color-scheme"
-	PermissionsPolicyFeatureChPrefersReducedMotion       PermissionsPolicyFeature = "ch-prefers-reduced-motion"
-	PermissionsPolicyFeatureChPrefersReducedTransparency PermissionsPolicyFeature = "ch-prefers-reduced-transparency"
-	PermissionsPolicyFeatureChRtt                        PermissionsPolicyFeature = "ch-rtt"
-	PermissionsPolicyFeatureChSaveData                   PermissionsPolicyFeature = "ch-save-data"
-	PermissionsPolicyFeatureChUa                         PermissionsPolicyFeature = "ch-ua"
-	PermissionsPolicyFeatureChUaArch                     PermissionsPolicyFeature = "ch-ua-arch"
-	PermissionsPolicyFeatureChUaBitness                  PermissionsPolicyFeature = "ch-ua-bitness"
-	PermissionsPolicyFeatureChUaPlatform                 PermissionsPolicyFeature = "ch-ua-platform"
-	PermissionsPolicyFeatureChUaModel                    PermissionsPolicyFeature = "ch-ua-model"
-	PermissionsPolicyFeatureChUaMobile                   PermissionsPolicyFeature = "ch-ua-mobile"
-	PermissionsPolicyFeatureChUaFormFactors              PermissionsPolicyFeature = "ch-ua-form-factors"
-	PermissionsPolicyFeatureChUaFullVersion              PermissionsPolicyFeature = "ch-ua-full-version"
-	PermissionsPolicyFeatureChUaFullVersionList          PermissionsPolicyFeature = "ch-ua-full-version-list"
-	PermissionsPolicyFeatureChUaPlatformVersion          PermissionsPolicyFeature = "ch-ua-platform-version"
-	PermissionsPolicyFeatureChUaWow64                    PermissionsPolicyFeature = "ch-ua-wow64"
-	PermissionsPolicyFeatureChViewportHeight             PermissionsPolicyFeature = "ch-viewport-height"
-	PermissionsPolicyFeatureChViewportWidth              PermissionsPolicyFeature = "ch-viewport-width"
-	PermissionsPolicyFeatureChWidth                      PermissionsPolicyFeature = "ch-width"
-	PermissionsPolicyFeatureClipboardRead                PermissionsPolicyFeature = "clipboard-read"
-	PermissionsPolicyFeatureClipboardWrite               PermissionsPolicyFeature = "clipboard-write"
-	PermissionsPolicyFeatureComputePressure              PermissionsPolicyFeature = "compute-pressure"
-	PermissionsPolicyFeatureCrossOriginIsolated          PermissionsPolicyFeature = "cross-origin-isolated"
-	PermissionsPolicyFeatureDirectSockets                PermissionsPolicyFeature = "direct-sockets"
-	PermissionsPolicyFeatureDisplayCapture               PermissionsPolicyFeature = "display-capture"
-	PermissionsPolicyFeatureDocumentDomain               PermissionsPolicyFeature = "document-domain"
-	PermissionsPolicyFeatureEncryptedMedia               PermissionsPolicyFeature = "encrypted-media"
-	PermissionsPolicyFeatureExecutionWhileOutOfViewport  PermissionsPolicyFeature = "execution-while-out-of-viewport"
-	PermissionsPolicyFeatureExecutionWhileNotRendered    PermissionsPolicyFeature = "execution-while-not-rendered"
-	PermissionsPolicyFeatureFocusWithoutUserActivation   PermissionsPolicyFeature = "focus-without-user-activation"
-	PermissionsPolicyFeatureFullscreen                   PermissionsPolicyFeature = "fullscreen"
-	PermissionsPolicyFeatureFrobulate                    PermissionsPolicyFeature = "frobulate"
-	PermissionsPolicyFeatureGamepad                      PermissionsPolicyFeature = "gamepad"
-	PermissionsPolicyFeatureGeolocation                  PermissionsPolicyFeature = "geolocation"
-	PermissionsPolicyFeatureGyroscope                    PermissionsPolicyFeature = "gyroscope"
-	PermissionsPolicyFeatureHid                          PermissionsPolicyFeature = "hid"
-	PermissionsPolicyFeatureIdentityCredentialsGet       PermissionsPolicyFeature = "identity-credentials-get"
-	PermissionsPolicyFeatureIdleDetection                PermissionsPolicyFeature = "idle-detection"
-	PermissionsPolicyFeatureInterestCohort               PermissionsPolicyFeature = "interest-cohort"
-	PermissionsPolicyFeatureJoinAdInterestGroup          PermissionsPolicyFeature = "join-ad-interest-group"
-	PermissionsPolicyFeatureKeyboardMap                  PermissionsPolicyFeature = "keyboard-map"
-	PermissionsPolicyFeatureLocalFonts                   PermissionsPolicyFeature = "local-fonts"
-	PermissionsPolicyFeatureMagnetometer                 PermissionsPolicyFeature = "magnetometer"
-	PermissionsPolicyFeatureMicrophone                   PermissionsPolicyFeature = "microphone"
-	PermissionsPolicyFeatureMidi                         PermissionsPolicyFeature = "midi"
-	PermissionsPolicyFeatureOtpCredentials               PermissionsPolicyFeature = "otp-credentials"
-	PermissionsPolicyFeaturePayment                      PermissionsPolicyFeature = "payment"
-	PermissionsPolicyFeaturePictureInPicture             PermissionsPolicyFeature = "picture-in-picture"
-	PermissionsPolicyFeaturePrivateAggregation           PermissionsPolicyFeature = "private-aggregation"
-	PermissionsPolicyFeaturePrivateStateTokenIssuance    PermissionsPolicyFeature = "private-state-token-issuance"
-	PermissionsPolicyFeaturePrivateStateTokenRedemption  PermissionsPolicyFeature = "private-state-token-redemption"
-	PermissionsPolicyFeaturePublickeyCredentialsCreate   PermissionsPolicyFeature = "publickey-credentials-create"
-	PermissionsPolicyFeaturePublickeyCredentialsGet      PermissionsPolicyFeature = "publickey-credentials-get"
-	PermissionsPolicyFeatureRunAdAuction                 PermissionsPolicyFeature = "run-ad-auction"
-	PermissionsPolicyFeatureScreenWakeLock               PermissionsPolicyFeature = "screen-wake-lock"
-	PermissionsPolicyFeatureSerial                       PermissionsPolicyFeature = "serial"
-	PermissionsPolicyFeatureSharedAutofill               PermissionsPolicyFeature = "shared-autofill"
-	PermissionsPolicyFeatureSharedStorage                PermissionsPolicyFeature = "shared-storage"
-	PermissionsPolicyFeatureSharedStorageSelectURL       PermissionsPolicyFeature = "shared-storage-select-url"
-	PermissionsPolicyFeatureSmartCard                    PermissionsPolicyFeature = "smart-card"
-	PermissionsPolicyFeatureSpeakerSelection             PermissionsPolicyFeature = "speaker-selection"
-	PermissionsPolicyFeatureStorageAccess                PermissionsPolicyFeature = "storage-access"
-	PermissionsPolicyFeatureSubApps                      PermissionsPolicyFeature = "sub-apps"
-	PermissionsPolicyFeatureSyncXhr                      PermissionsPolicyFeature = "sync-xhr"
-	PermissionsPolicyFeatureUnload                       PermissionsPolicyFeature = "unload"
-	PermissionsPolicyFeatureUsb                          PermissionsPolicyFeature = "usb"
-	PermissionsPolicyFeatureUsbUnrestricted              PermissionsPolicyFeature = "usb-unrestricted"
-	PermissionsPolicyFeatureVerticalScroll               PermissionsPolicyFeature = "vertical-scroll"
-	PermissionsPolicyFeatureWebPrinting                  PermissionsPolicyFeature = "web-printing"
-	PermissionsPolicyFeatureWebShare                     PermissionsPolicyFeature = "web-share"
-	PermissionsPolicyFeatureWindowManagement             PermissionsPolicyFeature = "window-management"
-	PermissionsPolicyFeatureWindowPlacement              PermissionsPolicyFeature = "window-placement"
-	PermissionsPolicyFeatureXrSpatialTracking            PermissionsPolicyFeature = "xr-spatial-tracking"
+	PermissionsPolicyFeatureAccelerometer                  PermissionsPolicyFeature = "accelerometer"
+	PermissionsPolicyFeatureAllScreensCapture              PermissionsPolicyFeature = "all-screens-capture"
+	PermissionsPolicyFeatureAmbientLightSensor             PermissionsPolicyFeature = "ambient-light-sensor"
+	PermissionsPolicyFeatureAttributionReporting           PermissionsPolicyFeature = "attribution-reporting"
+	PermissionsPolicyFeatureAutoplay                       PermissionsPolicyFeature = "autoplay"
+	PermissionsPolicyFeatureBluetooth                      PermissionsPolicyFeature = "bluetooth"
+	PermissionsPolicyFeatureBrowsingTopics                 PermissionsPolicyFeature = "browsing-topics"
+	PermissionsPolicyFeatureCamera                         PermissionsPolicyFeature = "camera"
+	PermissionsPolicyFeatureCapturedSurfaceControl         PermissionsPolicyFeature = "captured-surface-control"
+	PermissionsPolicyFeatureChDpr                          PermissionsPolicyFeature = "ch-dpr"
+	PermissionsPolicyFeatureChDeviceMemory                 PermissionsPolicyFeature = "ch-device-memory"
+	PermissionsPolicyFeatureChDownlink                     PermissionsPolicyFeature = "ch-downlink"
+	PermissionsPolicyFeatureChEct                          PermissionsPolicyFeature = "ch-ect"
+	PermissionsPolicyFeatureChPrefersColorScheme           PermissionsPolicyFeature = "ch-prefers-color-scheme"
+	PermissionsPolicyFeatureChPrefersReducedMotion         PermissionsPolicyFeature = "ch-prefers-reduced-motion"
+	PermissionsPolicyFeatureChPrefersReducedTransparency   PermissionsPolicyFeature = "ch-prefers-reduced-transparency"
+	PermissionsPolicyFeatureChRtt                          PermissionsPolicyFeature = "ch-rtt"
+	PermissionsPolicyFeatureChSaveData                     PermissionsPolicyFeature = "ch-save-data"
+	PermissionsPolicyFeatureChUa                           PermissionsPolicyFeature = "ch-ua"
+	PermissionsPolicyFeatureChUaArch                       PermissionsPolicyFeature = "ch-ua-arch"
+	PermissionsPolicyFeatureChUaBitness                    PermissionsPolicyFeature = "ch-ua-bitness"
+	PermissionsPolicyFeatureChUaPlatform                   PermissionsPolicyFeature = "ch-ua-platform"
+	PermissionsPolicyFeatureChUaModel                      PermissionsPolicyFeature = "ch-ua-model"
+	PermissionsPolicyFeatureChUaMobile                     PermissionsPolicyFeature = "ch-ua-mobile"
+	PermissionsPolicyFeatureChUaFormFactors                PermissionsPolicyFeature = "ch-ua-form-factors"
+	PermissionsPolicyFeatureChUaFullVersion                PermissionsPolicyFeature = "ch-ua-full-version"
+	PermissionsPolicyFeatureChUaFullVersionList            PermissionsPolicyFeature = "ch-ua-full-version-list"
+	PermissionsPolicyFeatureChUaPlatformVersion            PermissionsPolicyFeature = "ch-ua-platform-version"
+	PermissionsPolicyFeatureChUaWow64                      PermissionsPolicyFeature = "ch-ua-wow64"
+	PermissionsPolicyFeatureChViewportHeight               PermissionsPolicyFeature = "ch-viewport-height"
+	PermissionsPolicyFeatureChViewportWidth                PermissionsPolicyFeature = "ch-viewport-width"
+	PermissionsPolicyFeatureChWidth                        PermissionsPolicyFeature = "ch-width"
+	PermissionsPolicyFeatureClipboardRead                  PermissionsPolicyFeature = "clipboard-read"
+	PermissionsPolicyFeatureClipboardWrite                 PermissionsPolicyFeature = "clipboard-write"
+	PermissionsPolicyFeatureComputePressure                PermissionsPolicyFeature = "compute-pressure"
+	PermissionsPolicyFeatureControlledFrame                PermissionsPolicyFeature = "controlled-frame"
+	PermissionsPolicyFeatureCrossOriginIsolated            PermissionsPolicyFeature = "cross-origin-isolated"
+	PermissionsPolicyFeatureDeferredFetch                  PermissionsPolicyFeature = "deferred-fetch"
+	PermissionsPolicyFeatureDeferredFetchMinimal           PermissionsPolicyFeature = "deferred-fetch-minimal"
+	PermissionsPolicyFeatureDigitalCredentialsGet          PermissionsPolicyFeature = "digital-credentials-get"
+	PermissionsPolicyFeatureDirectSockets                  PermissionsPolicyFeature = "direct-sockets"
+	PermissionsPolicyFeatureDirectSocketsPrivate           PermissionsPolicyFeature = "direct-sockets-private"
+	PermissionsPolicyFeatureDisplayCapture                 PermissionsPolicyFeature = "display-capture"
+	PermissionsPolicyFeatureDocumentDomain                 PermissionsPolicyFeature = "document-domain"
+	PermissionsPolicyFeatureEncryptedMedia                 PermissionsPolicyFeature = "encrypted-media"
+	PermissionsPolicyFeatureExecutionWhileOutOfViewport    PermissionsPolicyFeature = "execution-while-out-of-viewport"
+	PermissionsPolicyFeatureExecutionWhileNotRendered      PermissionsPolicyFeature = "execution-while-not-rendered"
+	PermissionsPolicyFeatureFencedUnpartitionedStorageRead PermissionsPolicyFeature = "fenced-unpartitioned-storage-read"
+	PermissionsPolicyFeatureFocusWithoutUserActivation     PermissionsPolicyFeature = "focus-without-user-activation"
+	PermissionsPolicyFeatureFullscreen                     PermissionsPolicyFeature = "fullscreen"
+	PermissionsPolicyFeatureFrobulate                      PermissionsPolicyFeature = "frobulate"
+	PermissionsPolicyFeatureGamepad                        PermissionsPolicyFeature = "gamepad"
+	PermissionsPolicyFeatureGeolocation                    PermissionsPolicyFeature = "geolocation"
+	PermissionsPolicyFeatureGyroscope                      PermissionsPolicyFeature = "gyroscope"
+	PermissionsPolicyFeatureHid                            PermissionsPolicyFeature = "hid"
+	PermissionsPolicyFeatureIdentityCredentialsGet         PermissionsPolicyFeature = "identity-credentials-get"
+	PermissionsPolicyFeatureIdleDetection                  PermissionsPolicyFeature = "idle-detection"
+	PermissionsPolicyFeatureInterestCohort                 PermissionsPolicyFeature = "interest-cohort"
+	PermissionsPolicyFeatureJoinAdInterestGroup            PermissionsPolicyFeature = "join-ad-interest-group"
+	PermissionsPolicyFeatureKeyboardMap                    PermissionsPolicyFeature = "keyboard-map"
+	PermissionsPolicyFeatureLocalFonts                     PermissionsPolicyFeature = "local-fonts"
+	PermissionsPolicyFeatureMagnetometer                   PermissionsPolicyFeature = "magnetometer"
+	PermissionsPolicyFeatureMediaPlaybackWhileNotVisible   PermissionsPolicyFeature = "media-playback-while-not-visible"
+	PermissionsPolicyFeatureMicrophone                     PermissionsPolicyFeature = "microphone"
+	PermissionsPolicyFeatureMidi                           PermissionsPolicyFeature = "midi"
+	PermissionsPolicyFeatureOtpCredentials                 PermissionsPolicyFeature = "otp-credentials"
+	PermissionsPolicyFeaturePayment                        PermissionsPolicyFeature = "payment"
+	PermissionsPolicyFeaturePictureInPicture               PermissionsPolicyFeature = "picture-in-picture"
+	PermissionsPolicyFeaturePopins                         PermissionsPolicyFeature = "popins"
+	PermissionsPolicyFeaturePrivateAggregation             PermissionsPolicyFeature = "private-aggregation"
+	PermissionsPolicyFeaturePrivateStateTokenIssuance      PermissionsPolicyFeature = "private-state-token-issuance"
+	PermissionsPolicyFeaturePrivateStateTokenRedemption    PermissionsPolicyFeature = "private-state-token-redemption"
+	PermissionsPolicyFeaturePublickeyCredentialsCreate     PermissionsPolicyFeature = "publickey-credentials-create"
+	PermissionsPolicyFeaturePublickeyCredentialsGet        PermissionsPolicyFeature = "publickey-credentials-get"
+	PermissionsPolicyFeatureRunAdAuction                   PermissionsPolicyFeature = "run-ad-auction"
+	PermissionsPolicyFeatureScreenWakeLock                 PermissionsPolicyFeature = "screen-wake-lock"
+	PermissionsPolicyFeatureSerial                         PermissionsPolicyFeature = "serial"
+	PermissionsPolicyFeatureSharedAutofill                 PermissionsPolicyFeature = "shared-autofill"
+	PermissionsPolicyFeatureSharedStorage                  PermissionsPolicyFeature = "shared-storage"
+	PermissionsPolicyFeatureSharedStorageSelectURL         PermissionsPolicyFeature = "shared-storage-select-url"
+	PermissionsPolicyFeatureSmartCard                      PermissionsPolicyFeature = "smart-card"
+	PermissionsPolicyFeatureSpeakerSelection               PermissionsPolicyFeature = "speaker-selection"
+	PermissionsPolicyFeatureStorageAccess                  PermissionsPolicyFeature = "storage-access"
+	PermissionsPolicyFeatureSubApps                        PermissionsPolicyFeature = "sub-apps"
+	PermissionsPolicyFeatureSyncXhr                        PermissionsPolicyFeature = "sync-xhr"
+	PermissionsPolicyFeatureUnload                         PermissionsPolicyFeature = "unload"
+	PermissionsPolicyFeatureUsb                            PermissionsPolicyFeature = "usb"
+	PermissionsPolicyFeatureUsbUnrestricted                PermissionsPolicyFeature = "usb-unrestricted"
+	PermissionsPolicyFeatureVerticalScroll                 PermissionsPolicyFeature = "vertical-scroll"
+	PermissionsPolicyFeatureWebAppInstallation             PermissionsPolicyFeature = "web-app-installation"
+	PermissionsPolicyFeatureWebPrinting                    PermissionsPolicyFeature = "web-printing"
+	PermissionsPolicyFeatureWebShare                       PermissionsPolicyFeature = "web-share"
+	PermissionsPolicyFeatureWindowManagement               PermissionsPolicyFeature = "window-management"
+	PermissionsPolicyFeatureXrSpatialTracking              PermissionsPolicyFeature = "xr-spatial-tracking"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -139,6 +148,8 @@ func (t *PermissionsPolicyFeature) UnmarshalEasyJSON(in *jlexer.Lexer) {
 	switch PermissionsPolicyFeature(v) {
 	case PermissionsPolicyFeatureAccelerometer:
 		*t = PermissionsPolicyFeatureAccelerometer
+	case PermissionsPolicyFeatureAllScreensCapture:
+		*t = PermissionsPolicyFeatureAllScreensCapture
 	case PermissionsPolicyFeatureAmbientLightSensor:
 		*t = PermissionsPolicyFeatureAmbientLightSensor
 	case PermissionsPolicyFeatureAttributionReporting:
@@ -205,10 +216,20 @@ func (t *PermissionsPolicyFeature) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PermissionsPolicyFeatureClipboardWrite
 	case PermissionsPolicyFeatureComputePressure:
 		*t = PermissionsPolicyFeatureComputePressure
+	case PermissionsPolicyFeatureControlledFrame:
+		*t = PermissionsPolicyFeatureControlledFrame
 	case PermissionsPolicyFeatureCrossOriginIsolated:
 		*t = PermissionsPolicyFeatureCrossOriginIsolated
+	case PermissionsPolicyFeatureDeferredFetch:
+		*t = PermissionsPolicyFeatureDeferredFetch
+	case PermissionsPolicyFeatureDeferredFetchMinimal:
+		*t = PermissionsPolicyFeatureDeferredFetchMinimal
+	case PermissionsPolicyFeatureDigitalCredentialsGet:
+		*t = PermissionsPolicyFeatureDigitalCredentialsGet
 	case PermissionsPolicyFeatureDirectSockets:
 		*t = PermissionsPolicyFeatureDirectSockets
+	case PermissionsPolicyFeatureDirectSocketsPrivate:
+		*t = PermissionsPolicyFeatureDirectSocketsPrivate
 	case PermissionsPolicyFeatureDisplayCapture:
 		*t = PermissionsPolicyFeatureDisplayCapture
 	case PermissionsPolicyFeatureDocumentDomain:
@@ -219,6 +240,8 @@ func (t *PermissionsPolicyFeature) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PermissionsPolicyFeatureExecutionWhileOutOfViewport
 	case PermissionsPolicyFeatureExecutionWhileNotRendered:
 		*t = PermissionsPolicyFeatureExecutionWhileNotRendered
+	case PermissionsPolicyFeatureFencedUnpartitionedStorageRead:
+		*t = PermissionsPolicyFeatureFencedUnpartitionedStorageRead
 	case PermissionsPolicyFeatureFocusWithoutUserActivation:
 		*t = PermissionsPolicyFeatureFocusWithoutUserActivation
 	case PermissionsPolicyFeatureFullscreen:
@@ -247,6 +270,8 @@ func (t *PermissionsPolicyFeature) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PermissionsPolicyFeatureLocalFonts
 	case PermissionsPolicyFeatureMagnetometer:
 		*t = PermissionsPolicyFeatureMagnetometer
+	case PermissionsPolicyFeatureMediaPlaybackWhileNotVisible:
+		*t = PermissionsPolicyFeatureMediaPlaybackWhileNotVisible
 	case PermissionsPolicyFeatureMicrophone:
 		*t = PermissionsPolicyFeatureMicrophone
 	case PermissionsPolicyFeatureMidi:
@@ -257,6 +282,8 @@ func (t *PermissionsPolicyFeature) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PermissionsPolicyFeaturePayment
 	case PermissionsPolicyFeaturePictureInPicture:
 		*t = PermissionsPolicyFeaturePictureInPicture
+	case PermissionsPolicyFeaturePopins:
+		*t = PermissionsPolicyFeaturePopins
 	case PermissionsPolicyFeaturePrivateAggregation:
 		*t = PermissionsPolicyFeaturePrivateAggregation
 	case PermissionsPolicyFeaturePrivateStateTokenIssuance:
@@ -297,14 +324,14 @@ func (t *PermissionsPolicyFeature) UnmarshalEasyJSON(in *jlexer.Lexer) {
 		*t = PermissionsPolicyFeatureUsbUnrestricted
 	case PermissionsPolicyFeatureVerticalScroll:
 		*t = PermissionsPolicyFeatureVerticalScroll
+	case PermissionsPolicyFeatureWebAppInstallation:
+		*t = PermissionsPolicyFeatureWebAppInstallation
 	case PermissionsPolicyFeatureWebPrinting:
 		*t = PermissionsPolicyFeatureWebPrinting
 	case PermissionsPolicyFeatureWebShare:
 		*t = PermissionsPolicyFeatureWebShare
 	case PermissionsPolicyFeatureWindowManagement:
 		*t = PermissionsPolicyFeatureWindowManagement
-	case PermissionsPolicyFeatureWindowPlacement:
-		*t = PermissionsPolicyFeatureWindowPlacement
 	case PermissionsPolicyFeatureXrSpatialTracking:
 		*t = PermissionsPolicyFeatureXrSpatialTracking
 
@@ -674,14 +701,16 @@ func (t ClientNavigationReason) String() string {
 
 // ClientNavigationReason values.
 const (
-	ClientNavigationReasonFormSubmissionGet     ClientNavigationReason = "formSubmissionGet"
-	ClientNavigationReasonFormSubmissionPost    ClientNavigationReason = "formSubmissionPost"
-	ClientNavigationReasonHTTPHeaderRefresh     ClientNavigationReason = "httpHeaderRefresh"
-	ClientNavigationReasonScriptInitiated       ClientNavigationReason = "scriptInitiated"
-	ClientNavigationReasonMetaTagRefresh        ClientNavigationReason = "metaTagRefresh"
-	ClientNavigationReasonPageBlockInterstitial ClientNavigationReason = "pageBlockInterstitial"
-	ClientNavigationReasonReload                ClientNavigationReason = "reload"
-	ClientNavigationReasonAnchorClick           ClientNavigationReason = "anchorClick"
+	ClientNavigationReasonAnchorClick            ClientNavigationReason = "anchorClick"
+	ClientNavigationReasonFormSubmissionGet      ClientNavigationReason = "formSubmissionGet"
+	ClientNavigationReasonFormSubmissionPost     ClientNavigationReason = "formSubmissionPost"
+	ClientNavigationReasonHTTPHeaderRefresh      ClientNavigationReason = "httpHeaderRefresh"
+	ClientNavigationReasonInitialFrameNavigation ClientNavigationReason = "initialFrameNavigation"
+	ClientNavigationReasonMetaTagRefresh         ClientNavigationReason = "metaTagRefresh"
+	ClientNavigationReasonOther                  ClientNavigationReason = "other"
+	ClientNavigationReasonPageBlockInterstitial  ClientNavigationReason = "pageBlockInterstitial"
+	ClientNavigationReasonReload                 ClientNavigationReason = "reload"
+	ClientNavigationReasonScriptInitiated        ClientNavigationReason = "scriptInitiated"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -698,22 +727,26 @@ func (t ClientNavigationReason) MarshalJSON() ([]byte, error) {
 func (t *ClientNavigationReason) UnmarshalEasyJSON(in *jlexer.Lexer) {
 	v := in.String()
 	switch ClientNavigationReason(v) {
+	case ClientNavigationReasonAnchorClick:
+		*t = ClientNavigationReasonAnchorClick
 	case ClientNavigationReasonFormSubmissionGet:
 		*t = ClientNavigationReasonFormSubmissionGet
 	case ClientNavigationReasonFormSubmissionPost:
 		*t = ClientNavigationReasonFormSubmissionPost
 	case ClientNavigationReasonHTTPHeaderRefresh:
 		*t = ClientNavigationReasonHTTPHeaderRefresh
-	case ClientNavigationReasonScriptInitiated:
-		*t = ClientNavigationReasonScriptInitiated
+	case ClientNavigationReasonInitialFrameNavigation:
+		*t = ClientNavigationReasonInitialFrameNavigation
 	case ClientNavigationReasonMetaTagRefresh:
 		*t = ClientNavigationReasonMetaTagRefresh
+	case ClientNavigationReasonOther:
+		*t = ClientNavigationReasonOther
 	case ClientNavigationReasonPageBlockInterstitial:
 		*t = ClientNavigationReasonPageBlockInterstitial
 	case ClientNavigationReasonReload:
 		*t = ClientNavigationReasonReload
-	case ClientNavigationReasonAnchorClick:
-		*t = ClientNavigationReasonAnchorClick
+	case ClientNavigationReasonScriptInitiated:
+		*t = ClientNavigationReasonScriptInitiated
 
 	default:
 		in.AddError(fmt.Errorf("unknown ClientNavigationReason value: %v", v))
@@ -1149,6 +1182,11 @@ const (
 	BackForwardCacheNotRestoredReasonHTTPAuthRequired                                         BackForwardCacheNotRestoredReason = "HTTPAuthRequired"
 	BackForwardCacheNotRestoredReasonCookieFlushed                                            BackForwardCacheNotRestoredReason = "CookieFlushed"
 	BackForwardCacheNotRestoredReasonBroadcastChannelOnMessage                                BackForwardCacheNotRestoredReason = "BroadcastChannelOnMessage"
+	BackForwardCacheNotRestoredReasonWebViewSettingsChanged                                   BackForwardCacheNotRestoredReason = "WebViewSettingsChanged"
+	BackForwardCacheNotRestoredReasonWebViewJavaScriptObjectChanged                           BackForwardCacheNotRestoredReason = "WebViewJavaScriptObjectChanged"
+	BackForwardCacheNotRestoredReasonWebViewMessageListenerInjected                           BackForwardCacheNotRestoredReason = "WebViewMessageListenerInjected"
+	BackForwardCacheNotRestoredReasonWebViewSafeBrowsingAllowlistChanged                      BackForwardCacheNotRestoredReason = "WebViewSafeBrowsingAllowlistChanged"
+	BackForwardCacheNotRestoredReasonWebViewDocumentStartJavascriptChanged                    BackForwardCacheNotRestoredReason = "WebViewDocumentStartJavascriptChanged"
 	BackForwardCacheNotRestoredReasonWebSocket                                                BackForwardCacheNotRestoredReason = "WebSocket"
 	BackForwardCacheNotRestoredReasonWebTransport                                             BackForwardCacheNotRestoredReason = "WebTransport"
 	BackForwardCacheNotRestoredReasonWebRTC                                                   BackForwardCacheNotRestoredReason = "WebRTC"
@@ -1178,7 +1216,6 @@ const (
 	BackForwardCacheNotRestoredReasonPrinting                                                 BackForwardCacheNotRestoredReason = "Printing"
 	BackForwardCacheNotRestoredReasonWebDatabase                                              BackForwardCacheNotRestoredReason = "WebDatabase"
 	BackForwardCacheNotRestoredReasonPictureInPicture                                         BackForwardCacheNotRestoredReason = "PictureInPicture"
-	BackForwardCacheNotRestoredReasonPortal                                                   BackForwardCacheNotRestoredReason = "Portal"
 	BackForwardCacheNotRestoredReasonSpeechRecognizer                                         BackForwardCacheNotRestoredReason = "SpeechRecognizer"
 	BackForwardCacheNotRestoredReasonIdleManager                                              BackForwardCacheNotRestoredReason = "IdleManager"
 	BackForwardCacheNotRestoredReasonPaymentManager                                           BackForwardCacheNotRestoredReason = "PaymentManager"
@@ -1209,6 +1246,7 @@ const (
 	BackForwardCacheNotRestoredReasonContentWebUSB                                            BackForwardCacheNotRestoredReason = "ContentWebUSB"
 	BackForwardCacheNotRestoredReasonContentMediaSessionService                               BackForwardCacheNotRestoredReason = "ContentMediaSessionService"
 	BackForwardCacheNotRestoredReasonContentScreenReader                                      BackForwardCacheNotRestoredReason = "ContentScreenReader"
+	BackForwardCacheNotRestoredReasonContentDiscarded                                         BackForwardCacheNotRestoredReason = "ContentDiscarded"
 	BackForwardCacheNotRestoredReasonEmbedderPopupBlockerTabHelper                            BackForwardCacheNotRestoredReason = "EmbedderPopupBlockerTabHelper"
 	BackForwardCacheNotRestoredReasonEmbedderSafeBrowsingTriggeredPopupBlocker                BackForwardCacheNotRestoredReason = "EmbedderSafeBrowsingTriggeredPopupBlocker"
 	BackForwardCacheNotRestoredReasonEmbedderSafeBrowsingThreatDetails                        BackForwardCacheNotRestoredReason = "EmbedderSafeBrowsingThreatDetails"
@@ -1224,6 +1262,8 @@ const (
 	BackForwardCacheNotRestoredReasonEmbedderExtensionMessaging                               BackForwardCacheNotRestoredReason = "EmbedderExtensionMessaging"
 	BackForwardCacheNotRestoredReasonEmbedderExtensionMessagingForOpenPort                    BackForwardCacheNotRestoredReason = "EmbedderExtensionMessagingForOpenPort"
 	BackForwardCacheNotRestoredReasonEmbedderExtensionSentMessageToCachedFrame                BackForwardCacheNotRestoredReason = "EmbedderExtensionSentMessageToCachedFrame"
+	BackForwardCacheNotRestoredReasonRequestedByWebViewClient                                 BackForwardCacheNotRestoredReason = "RequestedByWebViewClient"
+	BackForwardCacheNotRestoredReasonPostMessageByWebViewClient                               BackForwardCacheNotRestoredReason = "PostMessageByWebViewClient"
 )
 
 // MarshalEasyJSON satisfies easyjson.Marshaler.
@@ -1354,6 +1394,16 @@ func (t *BackForwardCacheNotRestoredReason) UnmarshalEasyJSON(in *jlexer.Lexer) 
 		*t = BackForwardCacheNotRestoredReasonCookieFlushed
 	case BackForwardCacheNotRestoredReasonBroadcastChannelOnMessage:
 		*t = BackForwardCacheNotRestoredReasonBroadcastChannelOnMessage
+	case BackForwardCacheNotRestoredReasonWebViewSettingsChanged:
+		*t = BackForwardCacheNotRestoredReasonWebViewSettingsChanged
+	case BackForwardCacheNotRestoredReasonWebViewJavaScriptObjectChanged:
+		*t = BackForwardCacheNotRestoredReasonWebViewJavaScriptObjectChanged
+	case BackForwardCacheNotRestoredReasonWebViewMessageListenerInjected:
+		*t = BackForwardCacheNotRestoredReasonWebViewMessageListenerInjected
+	case BackForwardCacheNotRestoredReasonWebViewSafeBrowsingAllowlistChanged:
+		*t = BackForwardCacheNotRestoredReasonWebViewSafeBrowsingAllowlistChanged
+	case BackForwardCacheNotRestoredReasonWebViewDocumentStartJavascriptChanged:
+		*t = BackForwardCacheNotRestoredReasonWebViewDocumentStartJavascriptChanged
 	case BackForwardCacheNotRestoredReasonWebSocket:
 		*t = BackForwardCacheNotRestoredReasonWebSocket
 	case BackForwardCacheNotRestoredReasonWebTransport:
@@ -1412,8 +1462,6 @@ func (t *BackForwardCacheNotRestoredReason) UnmarshalEasyJSON(in *jlexer.Lexer) 
 		*t = BackForwardCacheNotRestoredReasonWebDatabase
 	case BackForwardCacheNotRestoredReasonPictureInPicture:
 		*t = BackForwardCacheNotRestoredReasonPictureInPicture
-	case BackForwardCacheNotRestoredReasonPortal:
-		*t = BackForwardCacheNotRestoredReasonPortal
 	case BackForwardCacheNotRestoredReasonSpeechRecognizer:
 		*t = BackForwardCacheNotRestoredReasonSpeechRecognizer
 	case BackForwardCacheNotRestoredReasonIdleManager:
@@ -1474,6 +1522,8 @@ func (t *BackForwardCacheNotRestoredReason) UnmarshalEasyJSON(in *jlexer.Lexer) 
 		*t = BackForwardCacheNotRestoredReasonContentMediaSessionService
 	case BackForwardCacheNotRestoredReasonContentScreenReader:
 		*t = BackForwardCacheNotRestoredReasonContentScreenReader
+	case BackForwardCacheNotRestoredReasonContentDiscarded:
+		*t = BackForwardCacheNotRestoredReasonContentDiscarded
 	case BackForwardCacheNotRestoredReasonEmbedderPopupBlockerTabHelper:
 		*t = BackForwardCacheNotRestoredReasonEmbedderPopupBlockerTabHelper
 	case BackForwardCacheNotRestoredReasonEmbedderSafeBrowsingTriggeredPopupBlocker:
@@ -1504,6 +1554,10 @@ func (t *BackForwardCacheNotRestoredReason) UnmarshalEasyJSON(in *jlexer.Lexer) 
 		*t = BackForwardCacheNotRestoredReasonEmbedderExtensionMessagingForOpenPort
 	case BackForwardCacheNotRestoredReasonEmbedderExtensionSentMessageToCachedFrame:
 		*t = BackForwardCacheNotRestoredReasonEmbedderExtensionSentMessageToCachedFrame
+	case BackForwardCacheNotRestoredReasonRequestedByWebViewClient:
+		*t = BackForwardCacheNotRestoredReasonRequestedByWebViewClient
+	case BackForwardCacheNotRestoredReasonPostMessageByWebViewClient:
+		*t = BackForwardCacheNotRestoredReasonPostMessageByWebViewClient
 
 	default:
 		in.AddError(fmt.Errorf("unknown BackForwardCacheNotRestoredReason value: %v", v))
@@ -1680,6 +1734,54 @@ func (t *FrameDetachedReason) UnmarshalEasyJSON(in *jlexer.Lexer) {
 
 // UnmarshalJSON satisfies json.Unmarshaler.
 func (t *FrameDetachedReason) UnmarshalJSON(buf []byte) error {
+	return easyjson.Unmarshal(buf, t)
+}
+
+// NavigatedWithinDocumentNavigationType navigation type.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Page#event-navigatedWithinDocument
+type NavigatedWithinDocumentNavigationType string
+
+// String returns the NavigatedWithinDocumentNavigationType as string value.
+func (t NavigatedWithinDocumentNavigationType) String() string {
+	return string(t)
+}
+
+// NavigatedWithinDocumentNavigationType values.
+const (
+	NavigatedWithinDocumentNavigationTypeFragment   NavigatedWithinDocumentNavigationType = "fragment"
+	NavigatedWithinDocumentNavigationTypeHistoryAPI NavigatedWithinDocumentNavigationType = "historyApi"
+	NavigatedWithinDocumentNavigationTypeOther      NavigatedWithinDocumentNavigationType = "other"
+)
+
+// MarshalEasyJSON satisfies easyjson.Marshaler.
+func (t NavigatedWithinDocumentNavigationType) MarshalEasyJSON(out *jwriter.Writer) {
+	out.String(string(t))
+}
+
+// MarshalJSON satisfies json.Marshaler.
+func (t NavigatedWithinDocumentNavigationType) MarshalJSON() ([]byte, error) {
+	return easyjson.Marshal(t)
+}
+
+// UnmarshalEasyJSON satisfies easyjson.Unmarshaler.
+func (t *NavigatedWithinDocumentNavigationType) UnmarshalEasyJSON(in *jlexer.Lexer) {
+	v := in.String()
+	switch NavigatedWithinDocumentNavigationType(v) {
+	case NavigatedWithinDocumentNavigationTypeFragment:
+		*t = NavigatedWithinDocumentNavigationTypeFragment
+	case NavigatedWithinDocumentNavigationTypeHistoryAPI:
+		*t = NavigatedWithinDocumentNavigationTypeHistoryAPI
+	case NavigatedWithinDocumentNavigationTypeOther:
+		*t = NavigatedWithinDocumentNavigationTypeOther
+
+	default:
+		in.AddError(fmt.Errorf("unknown NavigatedWithinDocumentNavigationType value: %v", v))
+	}
+}
+
+// UnmarshalJSON satisfies json.Unmarshaler.
+func (t *NavigatedWithinDocumentNavigationType) UnmarshalJSON(buf []byte) error {
 	return easyjson.Unmarshal(buf, t)
 }
 
