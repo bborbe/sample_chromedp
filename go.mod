@@ -1,12 +1,10 @@
 module github.com/bborbe/sample-chromedp
 
-go 1.24
-
-toolchain go1.24.1
+go 1.26.6
 
 require (
 	github.com/actgardner/gogen-avro/v9 v9.2.0
-	github.com/chromedp/chromedp v0.13.6
+	github.com/chromedp/chromedp v0.16.0
 	github.com/google/addlicense v1.1.1
 	github.com/incu6us/goimports-reviser/v3 v3.9.1
 	github.com/kisielk/errcheck v1.9.0
@@ -19,10 +17,10 @@ require (
 
 require (
 	github.com/bmatcuk/doublestar/v4 v4.8.1 // indirect
-	github.com/chromedp/cdproto v0.0.0-20250420205042-3f8c33ccbdec // indirect
+	github.com/chromedp/cdproto v0.0.0-20260804232424-e85f50dbfd32 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
-	github.com/go-json-experiment/json v0.0.0-20250417205406-170dfdcf87d1 // indirect
+	github.com/go-json-experiment/json v0.0.0-20260623181947-01eb4420fa68 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
@@ -39,7 +37,7 @@ require (
 	golang.org/x/mod v0.24.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/telemetry v0.0.0-20250417124945-06ef541f3fa3 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/tools v0.32.0 // indirect
