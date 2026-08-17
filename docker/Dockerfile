@@ -1,4 +1,4 @@
-FROM golang:1.13.2 AS build
+FROM golang:1.26.6 AS build
 COPY ../ /go/src/github.com/bborbe/sample-chromedp
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s" -a -installsuffix cgo -o /main ./src/github.com/bborbe/sample-chromedp/docker
 CMD ["/bin/bash"]
