@@ -23,7 +23,7 @@ test:
 check: lint vet errcheck vulncheck
 
 lint:
-	go run golang.org/x/lint/golint@$(GOLINT_VERSION) -min_confidence 1 $(shell go list -mod=vendor ./... | grep -v /vendor/)
+	go tool golint -min_confidence 1 $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
 vet:
 	go vet -mod=vendor $(shell go list -mod=vendor ./... | grep -v /vendor/)
@@ -35,7 +35,7 @@ addlicense:
 	go run github.com/google/addlicense@$(ADDLICENSE_VERSION) -c "Benjamin Borbe" -y $$(date +'%Y') -l bsd $$(find . -name "*.go" -not -path './vendor/*')
 
 vulncheck:
-	go run golang.org/x/vuln/cmd/govulncheck@$(GOVULNCHECK_VERSION) $(shell go list -mod=vendor ./... | grep -v /vendor/)
+	go tool govulncheck $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
 deps:
 	go get -u github.com/openshift/imagebuilder/cmd/imagebuilder
