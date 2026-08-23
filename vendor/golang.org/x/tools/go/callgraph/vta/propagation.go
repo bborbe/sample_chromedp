@@ -77,17 +77,10 @@ func scc(g *vtaGraph) (sccs [][]idx, idxToSccID []int) {
 	return sccs, idxToSccID
 }
 
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
-// LastIndex returns the index of the last occurrence of v in s, or -1 if v is
+// slicesLastIndex returns the index of the last occurrence of v in s, or -1 if v is
 // not present in s.
 //
-// LastIndex iterates backwards through the elements of s, stopping when the ==
+// slicesLastIndex iterates backwards through the elements of s, stopping when the ==
 // operator determines an element is equal to v.
 func slicesLastIndex[S ~[]E, E comparable](s S, v E) int {
 	// TODO: move to / dedup with slices.LastIndex
@@ -162,9 +155,9 @@ func propagate(graph *vtaGraph, canon *typeutil.Map) propTypeMap {
 		sccToTypes[sccID] = &typeSet
 	}
 
-	for i := len(sccs) - 1; i >= 0; i-- {
+	for i, scc := range slices.Backward(sccs) {
 		nextSccs := make(map[int]empty)
-		for _, n := range sccs[i] {
+		for _, n := range scc {
 			for succ := range graph.successors(n) {
 				nextSccs[idxToSccID[succ]] = empty{}
 			}

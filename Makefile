@@ -1,3 +1,4 @@
+include tools.env
 
 default: precommit
 
@@ -10,7 +11,7 @@ ensure:
 	go mod vendor
 
 format:
-	go run -mod=vendor github.com/incu6us/goimports-reviser/v3 -project-name github.com/bborbe/sample-chromedp -format -excludes vendor ./...
+	go run github.com/incu6us/goimports-reviser/v3@$(GOIMPORTS_REVISER_VERSION) -project-name github.com/bborbe/sample-chromedp -format -excludes vendor ./...
 
 generate:
 	rm -rf mocks avro
@@ -22,19 +23,19 @@ test:
 check: lint vet errcheck vulncheck
 
 lint:
-	go run -mod=vendor golang.org/x/lint/golint -min_confidence 1 $(shell go list -mod=vendor ./... | grep -v /vendor/)
+	go tool golint -min_confidence 1 $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
 vet:
 	go vet -mod=vendor $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
 errcheck:
-	go run -mod=vendor github.com/kisielk/errcheck -ignore '(Close|Write|Fprint)' $(shell go list -mod=vendor ./... | grep -v /vendor/)
+	go run github.com/kisielk/errcheck@$(ERRCHECK_VERSION) -ignore '(Close|Write|Fprint)' $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
 addlicense:
-	go run -mod=vendor github.com/google/addlicense -c "Benjamin Borbe" -y $$(date +'%Y') -l bsd $$(find . -name "*.go" -not -path './vendor/*')
+	go run github.com/google/addlicense@$(ADDLICENSE_VERSION) -c "Benjamin Borbe" -y $$(date +'%Y') -l bsd $$(find . -name "*.go" -not -path './vendor/*')
 
 vulncheck:
-	go run -mod=vendor golang.org/x/vuln/cmd/govulncheck $(shell go list -mod=vendor ./... | grep -v /vendor/)
+	go tool govulncheck $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
 deps:
 	go get -u github.com/openshift/imagebuilder/cmd/imagebuilder
